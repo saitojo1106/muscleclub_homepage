@@ -1,109 +1,103 @@
 "use client";
 
-import { useEffect, useState, memo } from "react";
-import styles from "@/app/_components/theme-switcher.module.css";
+import { useEffect, useState } from "react";
 
+// カラースキーム設定のキー
 const STORAGE_KEY = "theme";
 type ColorSchemePreference = "dark" | "light" | "system";
-const modes: ColorSchemePreference[] = ["system", "dark", "light"];
 
-// サーバーサイドでの初期レンダリングでFOUCを防ぐためのスクリプト
-const NoFOUCScript = (storageKey: string) => {
-  const key = storageKey;
-  const initialValue = document.documentElement.style.colorScheme === "dark" ? "dark" : "light";
-  
-  // この関数はDOMを更新します
-  window.updateDOM = () => {
-    // ユーザーの好みのカラースキームを取得
-    const preference = localStorage.getItem(key) || initialValue;
-    
-    // システムの場合は、マッチメディアクエリをチェック
-    const isDark = 
-      preference === "dark" || 
-      (preference === "system" && 
-        window.matchMedia("(prefers-color-scheme: dark)").matches);
-    
-    // DOMを更新
-    document.documentElement.classList[isDark ? "add" : "remove"]("dark");
-    
-    // data-mode属性を設定
-    document.documentElement.setAttribute("data-mode", preference);
-  };
-  
-  // 初期実行
-  window.updateDOM();
-  
-  // システム設定の変更をリッスン
-  window
-    .matchMedia("(prefers-color-scheme: dark)")
-    .addEventListener("change", window.updateDOM);
-  
-  return window.updateDOM;
-};
-
-// スクリプトのみで使用するためのグローバル宣言
-declare global {
-  interface Window {
-    updateDOM: () => void;
-  }
-}
-
-export const ThemeSwitcher = () => {
-  // スタティックサイト生成時にも動作させるため、サーバー側で"system"をデフォルト値として使用
-  const [mode, setMode] = useState<ColorSchemePreference>("system");
-  let updateDOM: () => void;
+export function ThemeSwitcher() {
+  // 初期値はシステム設定
+  const [theme, setTheme] = useState<ColorSchemePreference>("system");
 
   useEffect(() => {
-    // ブラウザ環境でのみローカルストレージを使用
-    setMode((localStorage.getItem(STORAGE_KEY) as ColorSchemePreference) || "system");
-    
-    // グローバル関数をローカル変数に保存
-    updateDOM = window.updateDOM;
-    
-    // タブ間で同期をとる
-    addEventListener("storage", (e: StorageEvent): void => {
-      e.key === STORAGE_KEY && setMode(e.newValue as ColorSchemePreference);
-    });
+    // クライアントサイドでのみ実行
+    const savedTheme = localStorage.getItem(STORAGE_KEY) as ColorSchemePreference;
+    if (savedTheme) {
+      setTheme(savedTheme);
+      updateDOM(savedTheme);
+    } else {
+      // 初期設定
+      updateDOM("system");
+    }
   }, []);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(STORAGE_KEY, mode);
-      updateDOM && updateDOM();
-    }
-  }, [mode]);
+  function updateDOM(preference: ColorSchemePreference) {
+    const root = document.documentElement;
+    
+    // システム設定の場合はメディアクエリをチェック
+    const isDark = 
+      preference === "dark" || 
+      (preference === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    
+    // DOMを更新
+    root.classList[isDark ? "add" : "remove"]("dark");
+    
+    // 属性を設定
+    root.setAttribute("data-mode", preference);
+    
+    // ローカルストレージに保存
+    localStorage.setItem(STORAGE_KEY, preference);
+  }
 
-  // モード切り替え処理
-  const handleModeSwitch = () => {
-    const index = modes.indexOf(mode);
-    setMode(modes[(index + 1) % modes.length]);
-  };
+  function toggleTheme() {
+    // system -> dark -> light -> system の順でトグル
+    const nextTheme: Record<ColorSchemePreference, ColorSchemePreference> = {
+      system: "dark",
+      dark: "light",
+      light: "system"
+    };
+    
+    const newTheme = nextTheme[theme];
+    setTheme(newTheme);
+    updateDOM(newTheme);
+  }
 
   return (
     <button
       suppressHydrationWarning
-      className={styles.switch}
-      onClick={handleModeSwitch}
+      onClick={toggleTheme}
+      className="fixed top-4 right-4 z-50 p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
       aria-label="テーマを切り替える"
+    >
+      {theme === "light" && "☀️"}
+      {theme === "dark" && "🌙"}
+      {theme === "system" && "🌓"}
+    </button>
+  );
+}
+
+// FOUCを防ぐためのスクリプト
+export function ThemeScript() {
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          (function() {
+            try {
+              var key = "${STORAGE_KEY}";
+              var preference = localStorage.getItem(key) || "system";
+              var isDark = preference === "dark" || 
+                          (preference === "system" && 
+                           window.matchMedia("(prefers-color-scheme: dark)").matches);
+              
+              document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+              document.documentElement.setAttribute("data-mode", preference);
+            } catch (e) {
+              console.error("テーマの適用中にエラーが発生しました:", e);
+            }
+          })();
+        `,
+      }}
     />
   );
-};
+}
 
-// インラインスクリプトを記述するコンポーネント
-export const ThemeScript = memo(() => (
-  <script
-    dangerouslySetInnerHTML={{
-      __html: `(${NoFOUCScript.toString()})('${STORAGE_KEY}')`,
-    }}
-  />
-));
-
-// メインコンポーネント
-export const ThemeSwitcherWithScript = () => (
-  <>
-    <ThemeScript />
-    <ThemeSwitcher />
-  </>
-);
-
-export default ThemeSwitcherWithScript;
+export default function ThemeSwitcherWithScript() {
+  return (
+    <>
+      <ThemeScript />
+      <ThemeSwitcher />
+    </>
+  );
+}

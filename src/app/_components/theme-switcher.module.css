@@ -1,0 +1,53 @@
+.switch {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background-color: rgba(156, 163, 175, 0.3);
+  border: none;
+  z-index: 50;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.switch:hover {
+  background-color: rgba(156, 163, 175, 0.5);
+  transform: scale(1.05);
+}
+
+.switch:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+/* ダークモード時のスタイル */
+:global(.dark) .switch {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+:global(.dark) .switch:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* システムテーマに従う場合のアイコン */
+.switch::before {
+  content: "🌓";
+  font-size: 1.2rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* ダークモード用のアイコン */
+:global([data-mode="dark"]) .switch::before {
+  content: "🌙";
+}
+
+/* ライトモード用のアイコン */
+:global([data-mode="light"]) .switch::before {
+  content: "☀️";
+}
