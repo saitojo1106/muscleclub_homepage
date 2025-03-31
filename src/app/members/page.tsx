@@ -1,6 +1,27 @@
 import Container from "@/app/_components/container";
 import Header from "@/app/_components/header";
 import Image from "next/image";
+import Link from "next/link";
+
+// インスタグラムのアイコンコンポーネント
+const InstagramIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="w-5 h-5"
+  >
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+  </svg>
+);
 
 // 部員のデータ
 const members = [
@@ -12,7 +33,8 @@ const members = [
     image: "/assets/members/member1.jpg", // 実際の画像パスに置き換えてください
     speciality: "ベンチプレス",
     message: "筋トレを通じて心身ともに成長していきましょう！",
-    records: "ベンチプレス: 100kg / スクワット: 120kg / デッドリフト: 150kg"
+    records: "ベンチプレス: 100kg / スクワット: 120kg / デッドリフト: 150kg",
+    instagram: "https://www.instagram.com/yamada_taro" // インスタグラムのURL
   },
   {
     id: 2,
@@ -22,7 +44,8 @@ const members = [
     image: "/assets/members/member2.jpg", // 実際の画像パスに置き換えてください
     speciality: "スクワット",
     message: "正しいフォームで効率的な筋トレを目指しています。",
-    records: "ベンチプレス: 45kg / スクワット: 80kg / デッドリフト: 90kg"
+    records: "ベンチプレス: 45kg / スクワット: 80kg / デッドリフト: 90kg",
+    instagram: "https://www.instagram.com/suzuki_hanako" // インスタグラムのURL
   },
   {
     id: 3,
@@ -32,7 +55,8 @@ const members = [
     image: "/assets/members/member3.jpg", // 実際の画像パスに置き換えてください
     speciality: "デッドリフト",
     message: "筋トレは継続が大切です。一緒に頑張りましょう！",
-    records: "ベンチプレス: 85kg / スクワット: 110kg / デッドリフト: 140kg"
+    records: "ベンチプレス: 85kg / スクワット: 110kg / デッドリフト: 140kg",
+    instagram: "https://www.instagram.com/sato_jiro" // インスタグラムのURL
   },
   {
     id: 4,
@@ -42,7 +66,8 @@ const members = [
     image: "/assets/members/member4.jpg", // 実際の画像パスに置き換えてください
     speciality: "ボディメイク",
     message: "健康的な体づくりを目指しています。",
-    records: "ベンチプレス: 40kg / スクワット: 70kg / デッドリフト: 80kg"
+    records: "ベンチプレス: 40kg / スクワット: 70kg / デッドリフト: 80kg",
+    instagram: "https://www.instagram.com/takahashi_misaki" // インスタグラムのURL
   },
 ];
 
@@ -65,6 +90,16 @@ export default function MembersPage() {
                     fill
                     className="object-cover"
                   />
+                  {/* インスタグラムリンクをオーバーレイで表示 */}
+                  <Link 
+                    href={member.instagram} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="absolute bottom-3 left-3 bg-white dark:bg-slate-800 p-2 rounded-full shadow-md hover:bg-pink-100 dark:hover:bg-pink-900 transition-colors"
+                    aria-label={`${member.name}のInstagramへ`}
+                  >
+                    <InstagramIcon />
+                  </Link>
                 </div>
                 <div className="md:w-2/3 p-6">
                   <div className="flex justify-between items-start mb-2">
@@ -73,7 +108,18 @@ export default function MembersPage() {
                       {member.role}
                     </div>
                   </div>
-                  <p className="text-gray-500 dark:text-gray-400 mb-4">{member.year} / 専門: {member.speciality}</p>
+                  <p className="text-gray-500 dark:text-gray-400 mb-4">
+                    {member.year} / 専門: {member.speciality}
+                    {/* インスタグラムリンクをテキスト内にも表示 */}
+                    <Link 
+                      href={member.instagram} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="ml-2 inline-flex items-center text-pink-500 hover:text-pink-600 dark:text-pink-400 dark:hover:text-pink-300"
+                    >
+                      <InstagramIcon /> <span className="ml-1">@{member.instagram.split('/').pop()}</span>
+                    </Link>
+                  </p>
                   <div className="mb-4">
                     <h3 className="text-lg font-semibold mb-1">メッセージ</h3>
                     <p className="text-gray-600 dark:text-gray-300">{member.message}</p>
