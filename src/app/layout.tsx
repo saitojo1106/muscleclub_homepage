@@ -1,5 +1,5 @@
 import Footer from "@/app/_components/footer";
-import { CMS_NAME, HOME_OG_IMAGE_URL } from "@/lib/constants";
+import { HOME_OG_IMAGE_URL } from "@/lib/constants";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import cn from "classnames";
@@ -13,18 +13,13 @@ import DateFormatter from "@/app/_components/date-formatter";
 
 import "./globals.css";
 
-export const EXAMPLE_PATH = "blog-starter";
-export const CMS_NAME = "マッスルクラブ";
-export const HOME_OG_IMAGE_URL =
-  "https://og-image.vercel.app/マッスルクラブ.png?theme=light&md=1&fontSize=100px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fnextjs-black-logo.svg";
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: `マッスルクラブ | 筋トレサークル公式サイト`,
   description: `筋トレと健康的な生活を通じて、心身ともに成長していく仲間たちのコミュニティ`,
   openGraph: {
-    images: [HOME_OG_IMAGE_URL], // 適切な画像に変更することをお勧めします
+    images: [HOME_OG_IMAGE_URL],
   },
 };
 
