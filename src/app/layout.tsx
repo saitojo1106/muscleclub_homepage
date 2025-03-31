@@ -3,7 +3,7 @@ import { HOME_OG_IMAGE_URL } from "@/lib/constants";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import cn from "classnames";
-import { ThemeSwitcher } from "./_components/theme-switcher";
+import ThemeSwitcherWithScript from "./_components/theme-switcher";
 import Container from "@/app/_components/container";
 import Header from "@/app/_components/header";
 import { getAllPosts } from "@/lib/api";
@@ -29,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ja" suppressHydrationWarning>
       <head>
         <link
           rel="apple-touch-icon"
@@ -65,8 +65,9 @@ export default function RootLayout({
       </head>
       <body
         className={cn(inter.className, "dark:bg-slate-900 dark:text-slate-400")}
+        suppressHydrationWarning
       >
-        <ThemeSwitcher />
+        <ThemeSwitcherWithScript />
         <div className="min-h-screen">{children}</div>
         <Footer />
       </body>

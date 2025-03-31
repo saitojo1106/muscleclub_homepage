@@ -1,98 +1,96 @@
 "use client";
 
-import styles from "./switch.module.css";
-import { memo, useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
+import styles from "@/app/_components/theme-switcher.module.css";
 
-declare global {
-  var updateDOM: () => void;
-}
-
-type ColorSchemePreference = "system" | "dark" | "light";
-
-const STORAGE_KEY = "nextjs-blog-starter-theme";
+const STORAGE_KEY = "theme";
+type ColorSchemePreference = "dark" | "light" | "system";
 const modes: ColorSchemePreference[] = ["system", "dark", "light"];
 
-/** to reuse updateDOM function defined inside injected script */
-
-/** function to be injected in script tag for avoiding FOUC (Flash of Unstyled Content) */
-export const NoFOUCScript = (storageKey: string) => {
-  /* can not use outside constants or function as this script will be injected in a different context */
-  const [SYSTEM, DARK, LIGHT] = ["system", "dark", "light"];
-
-  /** Modify transition globally to avoid patched transitions */
-  const modifyTransition = () => {
-    const css = document.createElement("style");
-    css.textContent = "*,*:after,*:before{transition:none !important;}";
-    document.head.appendChild(css);
-
-    return () => {
-      /* Force restyle */
-      getComputedStyle(document.body);
-      /* Wait for next tick before removing */
-      setTimeout(() => document.head.removeChild(css), 1);
-    };
-  };
-
-  const media = matchMedia(`(prefers-color-scheme: ${DARK})`);
-
-  /** function to add remove dark class */
+// サーバーサイドでの初期レンダリングでFOUCを防ぐためのスクリプト
+const NoFOUCScript = (storageKey: string) => {
+  const key = storageKey;
+  const initialValue = document.documentElement.style.colorScheme === "dark" ? "dark" : "light";
+  
+  // この関数はDOMを更新します
   window.updateDOM = () => {
-    const restoreTransitions = modifyTransition();
-    const mode = localStorage.getItem(storageKey) ?? SYSTEM;
-    const systemMode = media.matches ? DARK : LIGHT;
-    const resolvedMode = mode === SYSTEM ? systemMode : mode;
-    const classList = document.documentElement.classList;
-    if (resolvedMode === DARK) classList.add(DARK);
-    else classList.remove(DARK);
-    document.documentElement.setAttribute("data-mode", mode);
-    restoreTransitions();
+    // ユーザーの好みのカラースキームを取得
+    const preference = localStorage.getItem(key) || initialValue;
+    
+    // システムの場合は、マッチメディアクエリをチェック
+    const isDark = 
+      preference === "dark" || 
+      (preference === "system" && 
+        window.matchMedia("(prefers-color-scheme: dark)").matches);
+    
+    // DOMを更新
+    document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+    
+    // data-mode属性を設定
+    document.documentElement.setAttribute("data-mode", preference);
   };
+  
+  // 初期実行
   window.updateDOM();
-  media.addEventListener("change", window.updateDOM);
+  
+  // システム設定の変更をリッスン
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", window.updateDOM);
+  
+  return window.updateDOM;
 };
 
-let updateDOM: () => void;
+// スクリプトのみで使用するためのグローバル宣言
+declare global {
+  interface Window {
+    updateDOM: () => void;
+  }
+}
 
-/**
- * Switch button to quickly toggle user preference.
- */
-const Switch = () => {
-  const [mode, setMode] = useState<ColorSchemePreference>(
-    () =>
-      ((typeof localStorage !== "undefined" &&
-        localStorage.getItem(STORAGE_KEY)) ??
-        "system") as ColorSchemePreference,
-  );
+export const ThemeSwitcher = () => {
+  // スタティックサイト生成時にも動作させるため、サーバー側で"system"をデフォルト値として使用
+  const [mode, setMode] = useState<ColorSchemePreference>("system");
+  let updateDOM: () => void;
 
   useEffect(() => {
-    // store global functions to local variables to avoid any interference
+    // ブラウザ環境でのみローカルストレージを使用
+    setMode((localStorage.getItem(STORAGE_KEY) as ColorSchemePreference) || "system");
+    
+    // グローバル関数をローカル変数に保存
     updateDOM = window.updateDOM;
-    /** Sync the tabs */
+    
+    // タブ間で同期をとる
     addEventListener("storage", (e: StorageEvent): void => {
       e.key === STORAGE_KEY && setMode(e.newValue as ColorSchemePreference);
     });
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, mode);
-    updateDOM();
+    if (typeof window !== "undefined") {
+      localStorage.setItem(STORAGE_KEY, mode);
+      updateDOM && updateDOM();
+    }
   }, [mode]);
 
-  /** toggle mode */
+  // モード切り替え処理
   const handleModeSwitch = () => {
     const index = modes.indexOf(mode);
     setMode(modes[(index + 1) % modes.length]);
   };
+
   return (
     <button
       suppressHydrationWarning
       className={styles.switch}
       onClick={handleModeSwitch}
+      aria-label="テーマを切り替える"
     />
   );
 };
 
-const Script = memo(() => (
+// インラインスクリプトを記述するコンポーネント
+export const ThemeScript = memo(() => (
   <script
     dangerouslySetInnerHTML={{
       __html: `(${NoFOUCScript.toString()})('${STORAGE_KEY}')`,
@@ -100,14 +98,12 @@ const Script = memo(() => (
   />
 ));
 
-/**
- * This component wich applies classes and transitions.
- */
-export const ThemeSwitcher = () => {
-  return (
-    <>
-      <Script />
-      <Switch />
-    </>
-  );
-};
+// メインコンポーネント
+export const ThemeSwitcherWithScript = () => (
+  <>
+    <ThemeScript />
+    <ThemeSwitcher />
+  </>
+);
+
+export default ThemeSwitcherWithScript;
