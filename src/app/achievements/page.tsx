@@ -6,39 +6,36 @@ import Image from "next/image";
 const competitions = [
   {
     id: 1,
-    title: "全国学生ボディビル選手権2023",
-    date: "2023年8月15日",
-    location: "東京体育館",
-    image: "/assets/competitions/comp1.jpg", // 実際の画像パスに置き換えてください
+    title: "マッスルゲート仙台2024",
+    date: "2024年8月15日",
+    location: "仙台電力ホール",
+    image: "/assets/competitions/sendai_msg2024_classic.jpg", // 実際の画像パスに置き換えてください
     results: [
-      { member: "山田太郎", category: "70kg級", rank: "2位" },
-      { member: "佐藤次郎", category: "80kg級", rank: "3位" }
+      { member: "齋藤　丈", category: "新人の部", rank: "4位" },
     ],
-    description: "全国から集まった学生ボディビルダーたちとの熱い戦いでした。マッスルクラブからは5名が出場し、2名が入賞を果たしました。"
+    description: "全国から集まった学生ボディビルダーたちとの熱い戦いでした。マッスルクラブからは1名が出場し、1名が入賞を果たしました。"
   },
   {
     id: 2,
-    title: "地区別学生パワーリフティング大会2023",
-    date: "2023年5月22日",
-    location: "県立スポーツセンター",
-    image: "/assets/competitions/comp2.jpg", // 実際の画像パスに置き換えてください
+    title: "マッスルゲート仙台",
+    date: "2023年8月15日",
+    location: "仙台電力ホール",
+    image: "/assets/competitions/sendai_msg2024_body.jpg", // 実際の画像パスに置き換えてください
     results: [
-      { member: "鈴木花子", category: "女子60kg級", rank: "1位" },
-      { member: "高橋美咲", category: "女子52kg級", rank: "2位" },
-      { member: "山田太郎", category: "男子75kg級", rank: "1位" }
+      { member: "齋藤　丈", category: "ジュニアの部", rank: "4位" },
     ],
     description: "地区大会では、マッスルクラブのメンバーが大活躍。団体総合でも優勝を果たしました。"
   },
   {
     id: 3,
-    title: "インターカレッジ筋トレコンテスト2022",
-    date: "2022年11月30日",
-    location: "市民体育館",
-    image: "/assets/competitions/comp3.jpg", // 実際の画像パスに置き換えてください
+    title: "宮城選手権ボディビル大会",
+    date: "2024年8月2日",
+    location: "仙台市体育館",
+    image: "/assets/competitions/miyagicontest_2024.jpg", // 実際の画像パスに置き換えてください
     results: [
-      { member: "佐藤次郎", category: "総合", rank: "3位" }
+      { member: "齋藤　丈", category: "総合", rank: "予選落ち" }
     ],
-    description: "複数の種目を組み合わせた総合筋トレコンテスト。持久力と瞬発力の両方が試される大会でした。"
+    description: "上級者がたくさん出場しているかなりハイレベルな戦いでした。マッスルクラブからは1名が出場しましたが、予選落ちとなりました。"
   }
 ];
 
