@@ -9,7 +9,7 @@ const competitions = [
     title: "マッスルゲート仙台2024",
     date: "2024年8月15日",
     location: "仙台電力ホール",
-    image: "/assets/competitions/sendai_msg2024_classic.jpg", // 実際の画像パスに置き換えてください
+    image: "/assets/competitions/sendai_msg2024_classic2.jpg", // 実際の画像パスに置き換えてください
     results: [
       { member: "齋藤　丈", category: "新人の部", rank: "4位" },
     ],
