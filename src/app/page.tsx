@@ -15,7 +15,7 @@ export default function Index() {
         {/* ヒーローセクション */}
         <section className="relative h-96 mb-16 rounded-lg overflow-hidden">
           <Image
-            src="/assets/hero-image.jpg" // 適切な画像に置き換えてください
+            src="/assets/276341.jpg" // 適切な画像に置き換えてください
             alt="マッスルクラブ"
             fill
             className="object-cover"

@@ -26,9 +26,10 @@ export function Footer() {
           
           <div className="lg:w-1/3 text-center lg:text-right">
             <h4 className="font-semibold mb-4">お問い合わせ</h4>
-            <p className="text-gray-600 dark:text-gray-400">メール: muscleclub@example.com</p>
-            <p className="text-gray-600 dark:text-gray-400">活動場所: 〇〇大学 第二体育館</p>
-            <p className="text-gray-600 dark:text-gray-400 mt-4">活動日: 毎週月・水・金 18:00〜20:00</p>
+            <p className="text-gray-600 dark:text-gray-400">メール: tohtechmuscleclub@gmail.com</p>
+            <p className="text-gray-600 dark:text-gray-400">活動場所: 東北工業大学長町キャンパス　トレーニング室</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-4">活動日: 毎週月　火　水　木　土　日</p>
+            <p className="text-gray-600 dark:text-gray-400">活動時間: 平日17:00 - 19:00 休日10:00 - 12:00</p>
           </div>
         </div>
         <div className="py-4 text-center text-sm text-gray-500 dark:text-gray-400 border-t border-neutral-200 dark:border-slate-700">
