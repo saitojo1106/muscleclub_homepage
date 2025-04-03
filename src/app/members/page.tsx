@@ -30,7 +30,7 @@ const members = [
     name: "齋藤　丈",
     role: "エース",
     year: "3年生",
-    image: "/assets/members/member1.jpg", // 実際の画像パスに置き換えてください
+    image: "/assets/members/pro_D2PyqRsQ.jpeg", // 実際の画像パスに置き換えてください
     speciality: "ベンチプレス",
     message: "気合があれば結果がついてくる！",
     records: "ベンチプレス: 100kg / スクワット: 120kg / デッドリフト: 150kg",
@@ -41,7 +41,7 @@ const members = [
     name: "山田 孝翔",
     role: "副部長",
     year: "2年生",
-    image: "/assets/members/member2.jpg", // 実際の画像パスに置き換えてください
+    image: "/assets/members/pro_xPtf0FWG.jpeg", // 実際の画像パスに置き換えてください
     speciality: "デッドリフト",
     message: "正しいフォームで効率的な筋トレを目指しています。",
     records: "ベンチプレス: 45kg / スクワット: 80kg / デッドリフト: 90kg",
@@ -52,7 +52,7 @@ const members = [
     name: "皆川 隼人",
     role: "卒業生",
     year: "４年生",
-    image: "/assets/members/member3.jpg", // 実際の画像パスに置き換えてください
+    image: "/assets/members/pro_NqQm0DuA.jpeg", // 実際の画像パスに置き換えてください
     speciality: "ベンチプレス",
     message: "筋トレは継続が大切です。一緒に頑張りましょう！",
     records: "ベンチプレス: 85kg / スクワット: 110kg / デッドリフト: 140kg",
@@ -72,12 +72,13 @@ export default function MembersPage() {
           {members.map((member) => (
             <div key={member.id} className="border dark:border-slate-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
               <div className="flex flex-col md:flex-row">
-                <div className="md:w-1/3 relative h-64 md:h-auto">
+                <div className="md:w-1/3 relative h-64 md:h-[300px]">
                   <Image
                     src={member.image}
                     alt={member.name}
                     fill
                     className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
                   />
                   {/* インスタグラムリンクをオーバーレイで表示 */}
                   <Link 
@@ -106,7 +107,7 @@ export default function MembersPage() {
                       rel="noopener noreferrer"
                       className="ml-2 inline-flex items-center text-pink-500 hover:text-pink-600 dark:text-pink-400 dark:hover:text-pink-300"
                     >
-                      <InstagramIcon /> <span className="ml-1">@{member.instagram.split('/').pop()}</span>
+                      <InstagramIcon /> <span className="ml-1 hidden sm:inline">@{member.instagram.split('/').pop()}</span>
                     </Link>
                   </p>
                   <div className="mb-4">
