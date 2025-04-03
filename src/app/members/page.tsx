@@ -52,7 +52,7 @@ const members = [
     name: "皆川 隼人",
     role: "卒業生",
     year: "４年生",
-    image: "/assets/members/pro_NqQm0DuA.jpeg", // 実際の画像パスに置き換えてください
+    image: "/assets/members/pro_NpQm0DuA.jpeg", // 実際の画像パスに置き換えてください
     speciality: "ベンチプレス",
     message: "筋トレは継続が大切です。一緒に頑張りましょう！",
     records: "ベンチプレス: 85kg / スクワット: 110kg / デッドリフト: 140kg",
