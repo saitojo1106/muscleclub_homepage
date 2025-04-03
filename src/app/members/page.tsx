@@ -27,47 +27,36 @@ const InstagramIcon = () => (
 const members = [
   {
     id: 1,
-    name: "山田 太郎",
-    role: "部長",
+    name: "齋藤　丈",
+    role: "エース",
     year: "3年生",
     image: "/assets/members/member1.jpg", // 実際の画像パスに置き換えてください
     speciality: "ベンチプレス",
-    message: "筋トレを通じて心身ともに成長していきましょう！",
+    message: "気合があれば結果がついてくる！",
     records: "ベンチプレス: 100kg / スクワット: 120kg / デッドリフト: 150kg",
-    instagram: "https://www.instagram.com/yamada_taro" // インスタグラムのURL
+    instagram: "https://www.instagram.com/pythondaisuki_bb" // インスタグラムのURL
   },
   {
     id: 2,
-    name: "鈴木 花子",
+    name: "山田 孝翔",
     role: "副部長",
     year: "2年生",
     image: "/assets/members/member2.jpg", // 実際の画像パスに置き換えてください
-    speciality: "スクワット",
+    speciality: "デッドリフト",
     message: "正しいフォームで効率的な筋トレを目指しています。",
     records: "ベンチプレス: 45kg / スクワット: 80kg / デッドリフト: 90kg",
-    instagram: "https://www.instagram.com/suzuki_hanako" // インスタグラムのURL
+    instagram: "https://www.instagram.com/taka_toast_135" // インスタグラムのURL
   },
   {
     id: 3,
-    name: "佐藤 次郎",
-    role: "会計",
-    year: "3年生",
+    name: "皆川 隼人",
+    role: "卒業生",
+    year: "４年生",
     image: "/assets/members/member3.jpg", // 実際の画像パスに置き換えてください
-    speciality: "デッドリフト",
+    speciality: "ベンチプレス",
     message: "筋トレは継続が大切です。一緒に頑張りましょう！",
     records: "ベンチプレス: 85kg / スクワット: 110kg / デッドリフト: 140kg",
-    instagram: "https://www.instagram.com/sato_jiro" // インスタグラムのURL
-  },
-  {
-    id: 4,
-    name: "高橋 美咲",
-    role: "広報",
-    year: "1年生",
-    image: "/assets/members/member4.jpg", // 実際の画像パスに置き換えてください
-    speciality: "ボディメイク",
-    message: "健康的な体づくりを目指しています。",
-    records: "ベンチプレス: 40kg / スクワット: 70kg / デッドリフト: 80kg",
-    instagram: "https://www.instagram.com/takahashi_misaki" // インスタグラムのURL
+    instagram: "https://www.instagram.com/mina_48_haya" // インスタグラムのURL
   },
 ];
 
