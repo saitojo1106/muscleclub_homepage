@@ -82,15 +82,23 @@ export default function Index() {
                         src={post.coverImage}
                         alt={`Cover Image for ${post.title}`}
                         fill
-                        className="object-cover"
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
                     <div className="p-4 flex-grow">
                       <h3 className="text-xl font-bold mb-2 group-hover:text-blue-500 transition-colors">{post.title}</h3>
                       <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{post.excerpt.substring(0, 100)}...</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-500">
-                        {new Date(post.date).toLocaleDateString('ja-JP')}
-                      </p>
+                      <div className="flex items-center justify-between mt-auto">
+                        <p className="text-sm text-gray-500 dark:text-gray-500">
+                          {new Date(post.date).toLocaleDateString('ja-JP')}
+                        </p>
+                        <span className="text-blue-500 text-sm font-medium flex items-center">
+                          続きを読む
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </Link>
