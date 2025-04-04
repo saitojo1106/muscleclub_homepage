@@ -1,19 +1,69 @@
 ---
-title: "Learn How to Pre-render Pages Using Static Generation with Next.js"
-excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilities morbi tempus."
-coverImage: "/assets/blog/hello-world/cover.jpg"
-date: "2020-03-16T05:35:07.322Z"
+title: '初心者におすすめのトレーニングメニュー'
+excerpt: '筋トレを始めたばかりの人向けに、効果的で怪我のリスクが低いトレーニングメニューを紹介します。'
+coverImage: '/assets/blog/beginner-workout/cover.jpg'
+date: '2023-12-15T05:35:07.322Z'
 author:
-  name: Tim Neutkens
-  picture: "/assets/blog/authors/tim.jpeg"
+  name: 齋藤 丈
+  picture: '/assets/members/pro_D2PyqRsQ.jpeg'
 ogImage:
-  url: "/assets/blog/hello-world/cover.jpg"
+  url: '/assets/blog/beginner-workout/cover.jpg'
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilities morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.
+# 初心者におすすめのトレーニングメニュー
 
-Venenatis cras sed felis eget velit. Consectetur libero id faucibus nisl tincidunt. Gravida in fermentum et sollicitudin ac orci phasellus egestas tellus. Volutpat consequat mauris nunc congue nisi vitae. Id aliquet risus feugiat in ante metus dictum at tempor. Sed blandit libero volutpat sed cras. Sed odio morbi quis commodo odio aenean sed adipiscing. Velit euismod in pellentesque massa placerat. Mi bibendum neque egestas congue quisque egestas diam in arcu. Nisi lacus sed viverra tellus in. Nibh cras pulvinar mattis nunc sed. Luctus accumsan tortor posuere ac ut consequat semper viverra. Fringilla ut morbi tincidunt augue interdum velit euismod.
+筋トレを始めたばかりの方は、どのような種目をどのように組み合わせればいいのか悩むことが多いでしょう。このブログでは、初心者の方が安全に効果的に筋力をつけるためのメニューを紹介します。
 
-## Lorem Ipsum
+## 基本的な考え方
 
-Tristique senectus et netus et malesuada fames ac turpis. Ridiculous mus mauris vitae ultricies leo integer malesuada nunc vel. In mollis nunc sed id semper. Egestas tellus rutrum tellus pellentesque. Phasellus vestibulum lorem sed risus ultricies tristique nulla. Quis blandit turpis cursus in hac habitasse platea dictumst quisque. Eros donec ac odio tempor orci dapibus ultrices. Aliquam sem et tortor consequat id porta nibh. Adipiscing elit duis tristique sollicitudin nibh sit amet commodo nulla. Diam vulputate ut pharetra sit amet. Ut tellus elementum sagittis vitae et leo. Arcu non odio euismod lacinia at quis risus sed vulputate.
+初心者の段階では、複雑なマシンやフリーウェイトよりも、まず自重トレーニングから始めることをおすすめします。それによって、以下のメリットがあります：
+
+1. 自分の体の動きに慣れることができる
+2. 正しいフォームを身につけやすい
+3. 怪我のリスクが低い
+4. 特別な器具がなくても自宅でできる
+
+## おすすめメニュー
+
+### 1. プッシュアップ（腕立て伏せ）
+
+胸、肩、三頭筋を鍛えるための基本的な種目です。
+
+- **初級**: 膝をついた状態で行う
+- **標準**: 通常の腕立て伏せ
+- **上級**: 足を高い位置に置いて行う
+
+### 2. スクワット
+
+下半身全体、特に太もも、お尻、体幹を鍛えるための種目です。
+
+- **初級**: 椅子に座るような動作で、浅めに行う
+- **標準**: 太ももが床と平行になるまで下げる
+- **上級**: ジャンプスクワット
+
+### 3. プランク
+
+体幹（コア）を鍛える静的トレーニングです。
+
+- **初級**: 20秒から始める
+- **標準**: 45秒～1分キープ
+- **上級**: 2分以上キープ
+
+## トレーニングの頻度と回数
+
+週に3回程度、以下のように取り組むのがおすすめです：
+
+- プッシュアップ：3セット×8-12回
+- スクワット：3セット×10-15回
+- プランク：3セット×最大時間
+
+このメニューを4週間続けた後、少しずつ負荷を上げていきましょう。体が適応してきたら、ダンベルやバーベルを使用した種目に移行するのも良いでしょう。
+
+## 注意点
+
+- トレーニング前には必ずウォームアップを行う
+- 正しいフォームを心がける
+- 無理をしない、痛みを感じたら中止する
+- 適切な栄養と休息をとる
+
+質問があれば、マッスルクラブのメンバーにいつでも相談してください！
