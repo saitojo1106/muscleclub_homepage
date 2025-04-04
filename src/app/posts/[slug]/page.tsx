@@ -10,6 +10,7 @@ import { PostHeader } from "@/app/_components/post-header";
 import Link from "next/link";
 import Image from "next/image";
 import DateFormatter from "@/app/_components/date-formatter";
+import BlogImage from "@/app/_components/blog-image"; // クライアントコンポーネント
 
 // SNSシェアアイコンコンポーネント
 const TwitterIcon = () => (

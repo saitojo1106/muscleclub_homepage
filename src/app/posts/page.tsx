@@ -2,9 +2,9 @@ import Container from "@/app/_components/container";
 import Header from "@/app/_components/header";
 import { getAllPosts } from "@/lib/api";
 import Link from "next/link";
-import Image from "next/image";
 import DateFormatter from "@/app/_components/date-formatter";
 import { Intro } from "@/app/_components/intro";
+import BlogImage from "@/app/_components/blog-image"; // クライアントコンポーネント
 
 export default function BlogPage() {
   const posts = getAllPosts();
@@ -27,35 +27,24 @@ export default function BlogPage() {
             <Link href={`/posts/${latestPost.slug}`}>
               <div className="border dark:border-slate-700 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
                 <div className="relative h-72 md:h-96">
-                  <Image
+                  <BlogImage
                     src={latestPost.coverImage}
                     alt={`Cover Image for ${latestPost.title}`}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 90vw"
                     priority
-                    onError={(e) => {
-                      // エラー時のフォールバック処理
-                      const target = e.target as HTMLImageElement;
-                      target.onerror = null; // エラーの無限ループを避ける
-                      target.src = "/assets/blog/default-cover.jpg"; // 準備したデフォルト画像へのパス
-                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
                     <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{latestPost.title}</h3>
                     <p className="text-white/90 mb-4 line-clamp-2">{latestPost.excerpt}</p>
                     <div className="flex items-center">
                       <div className="relative w-10 h-10 mr-3">
-                        <Image
+                        <BlogImage
                           src={latestPost.author.picture}
                           alt={latestPost.author.name}
                           fill
                           className="rounded-full object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.onerror = null;
-                            target.src = "/assets/blog/authors/default-author.jpg";
-                          }}
                         />
                       </div>
                       <div>
@@ -80,17 +69,12 @@ export default function BlogPage() {
               <Link key={post.slug} href={`/posts/${post.slug}`}>
                 <div className="border dark:border-slate-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
                   <div className="relative h-48">
-                    <Image
+                    <BlogImage
                       src={post.coverImage}
                       alt={`Cover Image for ${post.title}`}
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.onerror = null;
-                        target.src = "/assets/blog/default-cover.jpg";
-                      }}
                     />
                   </div>
                   <div className="p-4 flex-grow flex flex-col">
@@ -100,17 +84,12 @@ export default function BlogPage() {
                     </p>
                     <p className="text-gray-600 dark:text-gray-300 mb-4 flex-grow line-clamp-3">{post.excerpt}</p>
                     <div className="flex items-center mt-2">
-                      <Image
+                      <BlogImage
                         src={post.author.picture}
                         alt={post.author.name}
                         width={40}
                         height={40}
                         className="rounded-full mr-2"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.onerror = null;
-                          target.src = "/assets/blog/authors/default-author.jpg";
-                        }}
                       />
                       <span className="text-sm text-gray-500 dark:text-gray-400">{post.author.name}</span>
                     </div>
