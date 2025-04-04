@@ -34,6 +34,12 @@ export default function BlogPage() {
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 90vw"
                     priority
+                    onError={(e) => {
+                      // エラー時のフォールバック処理
+                      const target = e.target as HTMLImageElement;
+                      target.onerror = null; // エラーの無限ループを避ける
+                      target.src = "/assets/blog/default-cover.jpg"; // 準備したデフォルト画像へのパス
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
                     <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{latestPost.title}</h3>
@@ -45,6 +51,11 @@ export default function BlogPage() {
                           alt={latestPost.author.name}
                           fill
                           className="rounded-full object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.onerror = null;
+                            target.src = "/assets/blog/authors/default-author.jpg";
+                          }}
                         />
                       </div>
                       <div>
@@ -75,6 +86,11 @@ export default function BlogPage() {
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = "/assets/blog/default-cover.jpg";
+                      }}
                     />
                   </div>
                   <div className="p-4 flex-grow flex flex-col">
@@ -90,6 +106,11 @@ export default function BlogPage() {
                         width={40}
                         height={40}
                         className="rounded-full mr-2"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src = "/assets/blog/authors/default-author.jpg";
+                        }}
                       />
                       <span className="text-sm text-gray-500 dark:text-gray-400">{post.author.name}</span>
                     </div>
