@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug } from "@/lib/api";
-import { CMS_NAME } from "@/lib/constants";
 import markdownToHtml from "@/lib/markdownToHtml";
 import Alert from "@/app/_components/alert";
 import Container from "@/app/_components/container";
@@ -10,6 +9,7 @@ import { PostBody } from "@/app/_components/post-body";
 import { PostHeader } from "@/app/_components/post-header";
 import Link from "next/link";
 import Image from "next/image";
+import DateFormatter from "@/app/_components/date-formatter";
 
 // SNSシェアアイコンコンポーネント
 const TwitterIcon = () => (
@@ -26,9 +26,15 @@ const FacebookIcon = () => (
 
 const LineIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12 5.373 12 12S18.627 0 12 0zm0 22c-5.514 0-10-4.486-10-10S6.486 2 12 2s10 4.486 10-10-4.486 10-10 10zm-3.5-9H7v-5h1.5v5zm5 0H12v-5h1.5v5zm-2-9C7.9 4 5 6.9 5 10.5c0 3.6 2.9 6.5 6.5 6.5 3.6 0 6.5-2.9 6.5-6.5C18 6.9 15.1 4 11.5 4zm0 11c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5z" />
+    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22c-5.514 0-10-4.486-10-10S6.486 2 12 2s10 4.486 10-10-4.486 10-10 10zm-3.5-9H7v-5h1.5v5zm5 0H12v-5h1.5v5zm-2-9C7.9 4 5 6.9 5 10.5c0 3.6 2.9 6.5 6.5 6.5 3.6 0 6.5-2.9 6.5-6.5C18 6.9 15.1 4 11.5 4zm0 11c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5z" />
   </svg>
 );
+
+type Params = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
 
 export default async function Post(props: Params) {
   const params = await props.params;
@@ -45,7 +51,7 @@ export default async function Post(props: Params) {
   const tags = ["筋トレ", "健康", "食事管理"];
 
   return (
-    <main>
+    <main className="pb-20">
       <Alert preview={post.preview} />
       <Container>
         <Header />
@@ -108,28 +114,26 @@ export default async function Post(props: Params) {
           <div className="max-w-4xl mx-auto mt-16 border-t border-gray-200 dark:border-gray-800 pt-12">
             <h3 className="text-2xl font-bold mb-6">関連記事</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {getAllPosts().slice(0, 2).map((relatedPost) => (
-                relatedPost.slug !== post.slug && (
-                  <Link key={relatedPost.slug} href={`/posts/${relatedPost.slug}`}>
-                    <div className="border dark:border-slate-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                      <div className="relative h-40">
-                        <Image
-                          src={relatedPost.coverImage}
-                          alt={relatedPost.title}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                        />
-                      </div>
-                      <div className="p-4">
-                        <h4 className="text-lg font-semibold group-hover:text-blue-500 transition-colors">{relatedPost.title}</h4>
-                        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-                          <DateFormatter dateString={relatedPost.date} />
-                        </p>
-                      </div>
+              {getAllPosts().filter(p => p.slug !== post.slug).slice(0, 2).map((relatedPost) => (
+                <Link key={relatedPost.slug} href={`/posts/${relatedPost.slug}`}>
+                  <div className="border dark:border-slate-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <div className="relative h-40">
+                      <Image
+                        src={relatedPost.coverImage}
+                        alt={relatedPost.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
                     </div>
-                  </Link>
-                )
+                    <div className="p-4">
+                      <h4 className="text-lg font-semibold group-hover:text-blue-500 transition-colors">{relatedPost.title}</h4>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+                        <DateFormatter dateString={relatedPost.date} />
+                      </p>
+                    </div>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -148,12 +152,6 @@ export default async function Post(props: Params) {
     </main>
   );
 }
-
-type Params = {
-  params: Promise<{
-    slug: string;
-  }>;
-};
 
 export async function generateMetadata(props: Params): Promise<Metadata> {
   const params = await props.params;

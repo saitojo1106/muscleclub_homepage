@@ -78,7 +78,7 @@ export default function BlogPage() {
                     />
                   </div>
                   <div className="p-4 flex-grow flex flex-col">
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-blue-500 transition-colors">{post.title}</h3>
+                    <h3 className="text-xl font-bold mb-2 hover:text-blue-500 transition-colors">{post.title}</h3>
                     <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">
                       <DateFormatter dateString={post.date} />
                     </p>

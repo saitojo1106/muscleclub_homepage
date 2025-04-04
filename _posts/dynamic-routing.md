@@ -1,19 +1,64 @@
 ---
-title: "Dynamic Routing and Static Generation"
-excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilities morbi tempus."
-coverImage: "/assets/blog/dynamic-routing/cover.jpg"
-date: "2020-03-16T05:35:07.322Z"
+title: '筋肉に効果的な栄養摂取ガイド'
+excerpt: '筋トレの効果を最大化するための食事プランとサプリメント選びのポイントを解説します。'
+coverImage: 'https://placehold.co/1200x600?text=栄養摂取ガイド'
+date: '2024-04-20T10:30:00.000Z'
 author:
-  name: JJ Kasper
-  picture: "/assets/blog/authors/jj.jpeg"
+  name: '山田 孝翔'
+  picture: '/assets/members/pro_xPtf0FWG.jpeg'
 ogImage:
-  url: "/assets/blog/dynamic-routing/cover.jpg"
+  url: 'https://placehold.co/1200x600?text=栄養摂取ガイド'
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Praesent elementum facilisis leo vel fringilla est ullamcorper eget. At imperdiet dui accumsan sit amet nulla facilities morbi tempus. Praesent elementum facilisis leo vel fringilla. Congue mauris rhoncus aenean vel. Egestas sed tempus urna et pharetra pharetra massa massa ultricies.
+# 筋肉に効果的な栄養摂取ガイド
 
-Venenatis cras sed felis eget velit. Consectetur libero id faucibus nisl tincidunt. Gravida in fermentum et sollicitudin ac orci phasellus egestas tellus. Volutpat consequat mauris nunc congue nisi vitae. Id aliquet risus feugiat in ante metus dictum at tempor. Sed blandit libero volutpat sed cras. Sed odio morbi quis commodo odio aenean sed adipiscing. Velit euismod in pellentesque massa placerat. Mi bibendum neque egestas congue quisque egestas diam in arcu. Nisi lacus sed viverra tellus in. Nibh cras pulvinar mattis nunc sed. Luctus accumsan tortor posuere ac ut consequat semper viverra. Fringilla ut morbi tincidunt augue interdum velit euismod.
+筋トレをしても、適切な栄養を摂らなければ効果は半減します。このガイドでは、筋肉の成長と回復に必要な栄養素と食事のタイミングについて解説します。
 
-## Lorem Ipsum
+## 必要な栄養素
 
-Tristique senectus et netus et malesuada fames ac turpis. Ridiculous mus mauris vitae ultricies leo integer malesuada nunc vel. In mollis nunc sed id semper. Egestas tellus rutrum tellus pellentesque. Phasellus vestibulum lorem sed risus ultricies tristique nulla. Quis blandit turpis cursus in hac habitasse platea dictumst quisque. Eros donec ac odio tempor orci dapibus ultrices. Aliquam sem et tortor consequat id porta nibh. Adipiscing elit duis tristique sollicitudin nibh sit amet commodo nulla. Diam vulputate ut pharetra sit amet. Ut tellus elementum sagittis vitae et leo. Arcu non odio euismod lacinia at quis risus sed vulputate.
+### 1. タンパク質
+
+筋肉の主成分となる栄養素です。
+
+- **推奨摂取量**: 体重1kgあたり1.6-2.0g
+- **良質なソース**: 鶏胸肉、卵、魚、ホエイプロテイン、大豆製品
+
+### 2. 炭水化物
+
+トレーニングのエネルギー源として重要です。
+
+- **推奨摂取量**: トレーニングの強度と目的により異なる
+- **良質なソース**: 玄米、オートミール、サツマイモ、バナナ
+
+### 3. 脂質
+
+ホルモンバランスの維持に不可欠です。
+
+- **推奨摂取量**: 総カロリーの20-35%程度
+- **良質なソース**: アボカド、ナッツ類、オリーブオイル、魚油
+
+## 食事のタイミング
+
+### トレーニング前
+
+トレーニングの1-2時間前に炭水化物とタンパク質を含む軽い食事を摂ると良いでしょう。
+例: バナナ1本とプロテインシェイク
+
+### トレーニング後
+
+トレーニング後30分以内にタンパク質と炭水化物を摂ることで、回復が促進されます。
+例: プロテインシェイクとリンゴ
+
+## サプリメントの活用法
+
+- **プロテインパウダー**: 手軽にタンパク質を補給できる
+- **クレアチン**: 筋力向上と回復をサポート
+- **BCAA**: トレーニング中の筋分解を抑制
+
+ただし、サプリメントはあくまで補助であり、バランスの良い食事が基本です。
+
+## 水分摂取の重要性
+
+トレーニング前、中、後を通じて適切な水分補給を心がけましょう。脱水状態では筋力発揮が制限され、回復も遅れます。
+
+質問があれば、マッスルクラブのメンバーにいつでも相談してください。正しい栄養摂取で、トレーニングの効果を最大化しましょう！
