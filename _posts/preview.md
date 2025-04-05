@@ -1,13 +1,13 @@
 ---
 title: '効果的なストレッチ法'
 excerpt: 'トレーニングの前後に行うべきストレッチの正しい方法と、柔軟性向上のためのポイントを紹介します。'
-coverImage: 'https://placehold.co/1200x600?text=ストレッチガイド'
+coverImage: '/assets/blog/beginner-workout/stretching.jpg'
 date: '2024-03-05T14:20:00.000Z'
 author:
   name: '皆川 隼人'
   picture: '/assets/members/minakawa.jpg'
 ogImage:
-  url: 'https://placehold.co/1200x600?text=ストレッチガイド'
+  url: '/assets/blog/beginner-workout/stretching.jpg'
 ---
 
 # 効果的なストレッチ法

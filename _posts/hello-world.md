@@ -4,8 +4,8 @@ excerpt: '筋トレを始めたばかりの人向けに、効果的で怪我の�
 coverImage: '/assets/blog/beginner-workout/cover.jpg'
 date: '2023-12-15T05:35:07.322Z'
 author:
-  name: 齋藤 丈
-  picture: '/assets/members/pro_D2PyqRsQ.jpg'
+  name: '齋藤 丈'
+  picture: '/assets/members/pro_D2PyqRsQ.jpeg'
 ogImage:
   url: '/assets/blog/beginner-workout/cover.jpg'
 ---

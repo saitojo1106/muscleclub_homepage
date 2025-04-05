@@ -1,13 +1,13 @@
 ---
 title: '筋肉に効果的な栄養摂取ガイド'
 excerpt: '筋トレの効果を最大化するための食事プランとサプリメント選びのポイントを解説します。'
-coverImage: 'https://placehold.co/1200x600?text=栄養摂取ガイド'
+coverImage: '/assets/blog/beginner-workout/nutrition.jpg'
 date: '2024-04-20T10:30:00.000Z'
 author:
   name: '山田 孝翔'
-  picture: '/assets/members/pro_xPtf0FWG.jpg'
+  picture: '/assets/members/pro_xPtf0FWG.jpeg'
 ogImage:
-  url: 'https://placehold.co/1200x600?text=栄養摂取ガイド'
+  url: '/assets/blog/beginner-workout/nutrition.jpg'
 ---
 
 # 筋肉に効果的な栄養摂取ガイド
