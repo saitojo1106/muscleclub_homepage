@@ -5,7 +5,7 @@ coverImage: '/assets/blog/beginner-workout/cover.jpg'
 date: '2023-12-15T05:35:07.322Z'
 author:
   name: 齋藤 丈
-  picture: '/assets/members/pro_D2PyqRsQ.jpeg'
+  picture: '/assets/members/pro_D2PyqRsQ.jpg'
 ogImage:
   url: '/assets/blog/beginner-workout/cover.jpg'
 ---

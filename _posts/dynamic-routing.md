@@ -5,7 +5,7 @@ coverImage: 'https://placehold.co/1200x600?text=栄養摂取ガイド'
 date: '2024-04-20T10:30:00.000Z'
 author:
   name: '山田 孝翔'
-  picture: '/assets/members/pro_xPtf0FWG.jpeg'
+  picture: '/assets/members/pro_xPtf0FWG.jpg'
 ogImage:
   url: 'https://placehold.co/1200x600?text=栄養摂取ガイド'
 ---
