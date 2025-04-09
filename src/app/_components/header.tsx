@@ -21,6 +21,9 @@ const Header = () => {
         <Link href="/posts" className="hover:text-blue-500 transition-colors font-semibold">
           ブログ
         </Link>
+        <Link href="/events" className="hover:text-blue-500 transition-colors font-semibold">
+          イベントカレンダー
+        </Link>
       </nav>
     </header>
   );

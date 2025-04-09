@@ -67,6 +67,18 @@ export default function Index() {
               <p className="text-gray-600 dark:text-gray-400">マッスルクラブの活動日記や筋トレのノウハウを発信しています</p>
             </div>
           </Link>
+
+          <Link href="/events" className="group">
+            <div className="border dark:border-slate-700 rounded-lg p-6 hover:shadow-md transition-shadow h-full flex flex-col items-center text-center">
+              <div className="bg-purple-100 dark:bg-purple-900 p-3 rounded-full mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold mb-2 group-hover:text-purple-500 transition-colors">イベントカレンダー</h2>
+              <p className="text-gray-600 dark:text-gray-400">大会やイベントの日程を確認できます</p>
+            </div>
+          </Link>
         </section>
         
         {/* 最新の投稿セクション */}
