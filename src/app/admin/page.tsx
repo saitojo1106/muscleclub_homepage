@@ -4,14 +4,13 @@ import { useState, useEffect } from 'react';
 import Container from '@/app/_components/container';
 import Header from '@/app/_components/header';
 import Link from 'next/link';
-import { getAllEvents } from '@/lib/events';
-import { addEvent, updateEvent, deleteEvent } from '@/lib/admin/event-service';
+import { getAllEvents } from '@/lib/admin/event-service';
+import type { Event } from '@/lib/events';
 
-// パスワード保護の簡易実装（本番環境ではより堅牢な方法を使用すること）
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<Event[]>([]);
   
   useEffect(() => {
     // ローカルストレージから認証状態を復元
@@ -23,11 +22,11 @@ export default function AdminPage() {
   }, []);
   
   const loadEvents = async () => {
-    const eventData = getAllEvents();
+    const eventData = await getAllEvents();
     setEvents(eventData);
   };
   
-  const handleLogin = (e) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
     // 簡易認証（本番環境ではより堅牢な方法を使用すること）

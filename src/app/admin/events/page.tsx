@@ -1,20 +1,16 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/app/auth/auth-context';
 import Container from '@/app/_components/container';
-import AdminHeader from '@/app/admin/_components/admin-header';
-import AdminSidebar from '@/app/admin/_components/admin-sidebar';
+import Link from 'next/link';
 import { getAllEvents, addEvent, updateEvent, deleteEvent } from '@/lib/admin/event-service';
 import type { Event } from '@/lib/events';
 
-export default function AdminEventsPage() {
-  const { isLoggedIn, isLoading } = useAuth();
-  const router = useRouter();
+export default function EventsAdminPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [currentEvent, setCurrentEvent] = useState<Partial<Event>>({
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState<Event>({
     id: 0,
     title: '',
     date: '',
@@ -23,24 +19,21 @@ export default function AdminEventsPage() {
     requirements: '',
     fee: '',
   });
-  const [isEditing, setIsEditing] = useState(false);
   
   useEffect(() => {
-    if (!isLoading && !isLoggedIn) {
-      router.push('/admin/login');
-    } else if (isLoggedIn) {
-      fetchEvents();
+    // ローカルストレージから認証状態を確認
+    const auth = localStorage.getItem('admin_auth');
+    if (auth !== 'true') {
+      window.location.href = '/admin';
+      return;
     }
-  }, [isLoggedIn, isLoading, router]);
+    
+    fetchEvents();
+  }, []);
   
   const fetchEvents = async () => {
-    const fetchedEvents = await getAllEvents();
-    setEvents(fetchedEvents);
-  };
-  
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setCurrentEvent(prev => ({ ...prev, [name]: value }));
+    const eventData = await getAllEvents();
+    setEvents(eventData);
   };
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -48,23 +41,12 @@ export default function AdminEventsPage() {
     
     try {
       if (isEditing) {
-        await updateEvent(currentEvent as Event);
+        await updateEvent(currentEvent);
       } else {
-        await addEvent(currentEvent as Event);
+        await addEvent(currentEvent);
       }
       
-      // フォームをリセット
-      setCurrentEvent({
-        id: 0,
-        title: '',
-        date: '',
-        location: '',
-        description: '',
-        requirements: '',
-        fee: '',
-      });
       setIsFormVisible(false);
-      setIsEditing(false);
       fetchEvents();
     } catch (error) {
       console.error('イベントの保存中にエラーが発生しました:', error);
@@ -88,182 +70,166 @@ export default function AdminEventsPage() {
     }
   };
   
-  if (isLoading) {
-    return <div>読み込み中...</div>;
-  }
-  
-  if (!isLoggedIn) {
-    return null;
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setCurrentEvent({ ...currentEvent, [name]: value });
+  };
   
   return (
-    <main className="min-h-screen">
-      <AdminHeader />
-      <div className="flex">
-        <AdminSidebar />
-        <Container className="flex-1 p-6">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold">イベント管理</h1>
-            <button
-              onClick={() => {
-                setIsFormVisible(true);
-                setIsEditing(false);
-                setCurrentEvent({
-                  id: 0,
-                  title: '',
-                  date: '',
-                  location: '',
-                  description: '',
-                  requirements: '',
-                  fee: '',
-                });
-              }}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-            >
-              新規イベント作成
-            </button>
+    <main>
+      <Container>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">イベント管理</h1>
+          <Link href="/admin" className="bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+            管理画面トップへ戻る
+          </Link>
+        </div>
+        
+        <div className="mb-6 flex justify-end">
+          <button
+            onClick={() => {
+              setIsFormVisible(true);
+              setIsEditing(false);
+              setCurrentEvent({
+                id: 0,
+                title: '',
+                date: '',
+                location: '',
+                description: '',
+                requirements: '',
+                fee: '',
+              });
+            }}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+          >
+            新規イベント作成
+          </button>
+        </div>
+        
+        {isFormVisible && (
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow mb-8">
+            <h2 className="text-xl font-semibold mb-4">{isEditing ? 'イベントを編集' : '新規イベントを作成'}</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block mb-1">イベント名</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={currentEvent.title}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-1">日付</label>
+                <input
+                  type="date"
+                  name="date"
+                  value={currentEvent.date}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-1">場所</label>
+                <input
+                  type="text"
+                  name="location"
+                  value={currentEvent.location}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-1">説明</label>
+                <textarea
+                  name="description"
+                  value={currentEvent.description}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"
+                  rows={4}
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-1">参加条件</label>
+                <input
+                  type="text"
+                  name="requirements"
+                  value={currentEvent.requirements}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-1">料金</label>
+                <input
+                  type="text"
+                  name="fee"
+                  value={currentEvent.fee}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"
+                />
+              </div>
+              
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+                >
+                  {isEditing ? '更新' : '作成'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsFormVisible(false)}
+                  className="bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                >
+                  キャンセル
+                </button>
+              </div>
+            </form>
           </div>
-          
-          {isFormVisible && (
-            <div className="mb-8 bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">{isEditing ? 'イベントを編集' : '新規イベント作成'}</h2>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block mb-1">イベント名</label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={currentEvent.title}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block mb-1">日付</label>
-                  <input
-                    type="date"
-                    name="date"
-                    value={currentEvent.date?.split('T')[0]}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block mb-1">場所</label>
-                  <input
-                    type="text"
-                    name="location"
-                    value={currentEvent.location}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block mb-1">説明</label>
-                  <textarea
-                    name="description"
-                    value={currentEvent.description}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded h-32 dark:bg-slate-700 dark:border-slate-600"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block mb-1">参加要件</label>
-                  <textarea
-                    name="requirements"
-                    value={currentEvent.requirements}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block mb-1">参加費</label>
-                  <input
-                    type="text"
-                    name="fee"
-                    value={currentEvent.fee}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"
-                  />
-                </div>
-                
-                <div className="flex gap-3">
-                  <button
-                    type="submit"
-                    className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition-colors"
-                  >
-                    {isEditing ? '更新' : '作成'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsFormVisible(false)}
-                    className="bg-gray-300 text-gray-800 px-6 py-2 rounded hover:bg-gray-400 transition-colors"
-                  >
-                    キャンセル
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-          
-          <div>
-            <h2 className="text-xl font-semibold mb-4">登録済みイベント</h2>
-            
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-white dark:bg-slate-800 rounded-lg shadow">
-                <thead className="bg-gray-50 dark:bg-slate-700">
-                  <tr>
-                    <th className="py-3 px-4 text-left">イベント名</th>
-                    <th className="py-3 px-4 text-left">日付</th>
-                    <th className="py-3 px-4 text-left">場所</th>
-                    <th className="py-3 px-4 text-left">操作</th>
+        )}
+        
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
+          <h2 className="text-xl font-semibold mb-4">イベント一覧</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead>
+                <tr className="bg-gray-100 dark:bg-slate-700">
+                  <th className="py-3 px-4 text-left">イベント名</th>
+                  <th className="py-3 px-4 text-left">日付</th>
+                  <th className="py-3 px-4 text-left">場所</th>
+                  <th className="py-3 px-4 text-left">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {events.map((event) => (
+                  <tr key={event.id} className="hover:bg-gray-50 dark:hover:bg-slate-700">
+                    <td className="py-3 px-4">{event.title}</td>
+                    <td className="py-3 px-4">{new Date(event.date).toLocaleDateString('ja-JP')}</td>
+                    <td className="py-3 px-4">{event.location}</td>
+                    <td className="py-3 px-4">
+                      <div className="flex gap-2">
+                        <button onClick={() => handleEdit(event)} className="text-blue-500 hover:text-blue-700">編集</button>
+                        <button onClick={() => handleDelete(event.id)} className="text-red-500 hover:text-red-700">削除</button>
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-slate-700">
-                  {events.map((event) => (
-                    <tr key={event.id} className="hover:bg-gray-50 dark:hover:bg-slate-700">
-                      <td className="py-3 px-4">{event.title}</td>
-                      <td className="py-3 px-4">{new Date(event.date).toLocaleDateString('ja-JP')}</td>
-                      <td className="py-3 px-4">{event.location}</td>
-                      <td className="py-3 px-4">
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleEdit(event)}
-                            className="text-blue-500 hover:text-blue-700"
-                          >
-                            編集
-                          </button>
-                          <button
-                            onClick={() => handleDelete(event.id)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            削除
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            
-            {events.length === 0 && (
-              <p className="text-center text-gray-500 dark:text-gray-400 py-8">
-                登録されているイベントはありません
-              </p>
-            )}
+                ))}
+              </tbody>
+            </table>
           </div>
-        </Container>
-      </div>
+        </div>
+      </Container>
     </main>
   );
 }
