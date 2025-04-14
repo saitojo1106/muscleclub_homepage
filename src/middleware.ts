@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 
 // ミドルウェア関数をエクスポート
 export function middleware(request: NextRequest) {
+
   // パスを取得
   const path = request.nextUrl.pathname;
   
