@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Container from '@/app/_components/container';
 import Link from 'next/link';
 import { getAllMembers, addMember, updateMember, deleteMember, loadSampleData } from '@/lib/admin/member-service';
@@ -16,7 +18,8 @@ export type Member = {
 };
 
 export default function MembersAdminPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [members, setMembers] = useState<Member[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -30,17 +33,16 @@ export default function MembersAdminPage() {
   });
   
   useEffect(() => {
-    // 認証チェック
-    const auth = localStorage.getItem('admin_auth');
-    if (auth !== 'true') {
-      window.location.href = '/admin';
+    // 認証チェック - NextAuth
+    if (status === "unauthenticated") {
+      router.push("/admin/login");
       return;
     }
-    setIsAuthenticated(true);
-    
-    // 部員データを取得
-    fetchMembers();
-  }, []);
+
+    if (status === "authenticated") {
+      fetchMembers();
+    }
+  }, [status, router]);
   
   const fetchMembers = async () => {
     try {
@@ -100,8 +102,14 @@ export default function MembersAdminPage() {
     setCurrentMember({ ...currentMember, [name]: value });
   };
   
-  if (!isAuthenticated) {
+  // ローディング中の表示
+  if (status === "loading") {
     return <div>Loading...</div>;
+  }
+  
+  // 未認証の場合は何も表示しない（useEffectでリダイレクト処理をしているため）
+  if (!session) {
+    return null;
   }
   
   return (

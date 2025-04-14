@@ -1,68 +1,78 @@
 "use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/app/auth/auth-context';
-import Container from '@/app/_components/container';
-import AdminHeader from '@/app/admin/_components/admin-header';
-import AdminSidebar from '@/app/admin/_components/admin-sidebar';
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import Container from "@/app/_components/container";
+import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 export default function DashboardPage() {
-  const { isLoggedIn, isLoading } = useAuth();
+  const { data: session, status } = useSession();
   const router = useRouter();
-  
+
   useEffect(() => {
-    if (!isLoading && !isLoggedIn) {
-      router.push('/admin/login');
+    // 未認証の場合はログインページにリダイレクト
+    if (status === "unauthenticated") {
+      router.push("/admin/login");
     }
-  }, [isLoggedIn, isLoading, router]);
-  
-  if (isLoading) {
-    return <div>読み込み中...</div>;
+  }, [status, router]);
+
+  // ローディング中
+  if (status === "loading") {
+    return <div>Loading...</div>;
   }
-  
-  if (!isLoggedIn) {
+
+  // 認証済みでなければ何も表示しない
+  if (!session) {
     return null;
   }
-  
+
   return (
-    <main className="min-h-screen">
-      <AdminHeader />
-      <div className="flex">
-        <AdminSidebar />
-        <Container className="flex-1 p-6">
-          <h1 className="text-3xl font-bold mb-8">管理画面</h1>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">イベント</h2>
-              <p className="text-3xl font-bold text-blue-500">8</p>
-              <p className="text-gray-500 dark:text-gray-400">登録されたイベント</p>
-              <a href="/admin/events" className="text-blue-500 hover:underline mt-4 inline-block">
-                管理する →
-              </a>
-            </div>
-            
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">ブログ記事</h2>
-              <p className="text-3xl font-bold text-green-500">12</p>
-              <p className="text-gray-500 dark:text-gray-400">公開された記事</p>
-              <a href="/admin/posts" className="text-blue-500 hover:underline mt-4 inline-block">
-                管理する →
-              </a>
-            </div>
-            
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">メンバー</h2>
-              <p className="text-3xl font-bold text-purple-500">6</p>
-              <p className="text-gray-500 dark:text-gray-400">登録されたメンバー</p>
-              <a href="/admin/members" className="text-blue-500 hover:underline mt-4 inline-block">
-                管理する →
-              </a>
-            </div>
-          </div>
-        </Container>
-      </div>
+    <main>
+      <Container>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">管理ダッシュボード</h1>
+          <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          >
+            ログアウト
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          <Link
+            href="/admin/events"
+            className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow hover:shadow-md transition-shadow"
+          >
+            <h2 className="text-xl font-semibold mb-2">イベント管理</h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              イベントの追加・編集・削除
+            </p>
+          </Link>
+
+          <Link
+            href="/admin/posts"
+            className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow hover:shadow-md transition-shadow"
+          >
+            <h2 className="text-xl font-semibold mb-2">ブログ管理</h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              記事の投稿・編集・削除
+            </p>
+          </Link>
+
+          <Link
+            href="/admin/members"
+            className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow hover:shadow-md transition-shadow"
+          >
+            <h2 className="text-xl font-semibold mb-2">部員管理</h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              部員情報の追加・編集・削除
+            </p>
+          </Link>
+        </div>
+      </Container>
     </main>
   );
 }

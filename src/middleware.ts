@@ -1,16 +1,24 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+import type { NextRequest } from "next/server";
 
-// ミドルウェア関数をエクスポート
-export function middleware(request: NextRequest) {
-
-  // パスを取得
+// ミドルウェア関数を定義
+export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   
-  // 管理者ページへのアクセスを制限
+  // 管理者ページは認証が必要
   if (path.startsWith('/admin') && path !== '/admin/login') {
-    // 実際の認証ロジックは後で実装（今はスルーさせる）
-    return NextResponse.next();
+    const token = await getToken({ 
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET 
+    });
+    
+    // トークンがない場合はログインページにリダイレクト
+    if (!token) {
+      const url = new URL('/admin/login', request.url);
+      url.searchParams.set('callbackUrl', encodeURI(request.url));
+      return NextResponse.redirect(url);
+    }
   }
   
   return NextResponse.next();
