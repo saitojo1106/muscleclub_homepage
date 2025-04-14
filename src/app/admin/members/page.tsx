@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import Container from '@/app/_components/container';
 import Link from 'next/link';
+import { getAllMembers, addMember, updateMember, deleteMember, loadSampleData } from '@/lib/admin/member-service';
 
-// 部員の型定義
-type Member = {
+// 部員の型定義（エクスポートして他ファイルからも使用可能に）
+export type Member = {
   id: number;
   name: string;
   position: string;
@@ -13,26 +14,6 @@ type Member = {
   description: string;
   image?: string;
 };
-
-// サンプルデータ
-const sampleMembers: Member[] = [
-  {
-    id: 1,
-    name: '山田 太郎',
-    position: '部長',
-    year: '3年',
-    description: 'ボディビル3年目。全国大会出場経験あり。',
-    image: '/assets/members/sample1.jpg'
-  },
-  {
-    id: 2,
-    name: '佐藤 花子',
-    position: '副部長',
-    year: '2年',
-    description: 'フィジーク競技が専門。地方大会で準優勝。',
-    image: '/assets/members/sample2.jpg'
-  }
-];
 
 export default function MembersAdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -57,18 +38,43 @@ export default function MembersAdminPage() {
     }
     setIsAuthenticated(true);
     
-    // サンプルデータの読み込み
-    // 実際のアプリでは、APIやlocalStorageからデータを取得
-    setMembers(sampleMembers);
+    // 部員データを取得
+    fetchMembers();
   }, []);
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const fetchMembers = async () => {
+    try {
+      let memberData = await getAllMembers();
+      
+      // データがない場合はサンプルデータをロード
+      if (memberData.length === 0) {
+        memberData = await loadSampleData();
+      }
+      
+      setMembers(memberData);
+    } catch (error) {
+      console.error('部員データの取得中にエラーが発生しました:', error);
+    }
+  };
+  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 現在はアラートを表示するだけ
-    alert('保存機能は現在開発中です。今後のアップデートをお待ちください。');
-    
-    setIsFormVisible(false);
+    try {
+      if (isEditing) {
+        await updateMember(currentMember);
+      } else {
+        // idを除外したオブジェクトをaddMemberに渡す
+        const { id, ...memberWithoutId } = currentMember;
+        await addMember(memberWithoutId);
+      }
+      
+      setIsFormVisible(false);
+      fetchMembers();
+    } catch (error) {
+      console.error('部員データの保存中にエラーが発生しました:', error);
+      alert('エラーが発生しました。詳細はコンソールを確認してください。');
+    }
   };
   
   const handleEdit = (member: Member) => {
@@ -77,10 +83,15 @@ export default function MembersAdminPage() {
     setIsFormVisible(true);
   };
   
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (window.confirm('この部員情報を削除してもよろしいですか？')) {
-      // 現在はアラートを表示するだけ
-      alert('削除機能は現在開発中です。今後のアップデートをお待ちください。');
+      try {
+        await deleteMember(id);
+        fetchMembers();
+      } catch (error) {
+        console.error('部員の削除中にエラーが発生しました:', error);
+        alert('エラーが発生しました。詳細はコンソールを確認してください。');
+      }
     }
   };
   
@@ -184,7 +195,7 @@ export default function MembersAdminPage() {
                 <input
                   type="text"
                   name="image"
-                  value={currentMember.image}
+                  value={currentMember.image || ''}
                   onChange={handleChange}
                   placeholder="画像のURLを入力（開発中）"
                   className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"
