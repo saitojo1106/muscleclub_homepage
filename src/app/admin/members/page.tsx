@@ -117,8 +117,8 @@ export default function MembersAdminPage() {
       <Container>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">部員管理</h1>
-          <Link href="/admin" className="bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
-            管理画面トップへ戻る
+          <Link href="/admin/dashboard" className="bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+            ダッシュボードへ戻る
           </Link>
         </div>
         
@@ -264,11 +264,11 @@ export default function MembersAdminPage() {
         <div className="mt-8 bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
           <h3 className="font-bold text-amber-800 dark:text-amber-400 mb-2">開発メモ</h3>
           <p className="text-amber-700 dark:text-amber-300 mb-2">
-            現在は表示機能のみ実装されています。実際のデータ保存・編集・削除機能は開発中です。
+            基本的なCRUD操作機能が実装されました。データはブラウザのローカルストレージに保存されます。
           </p>
           <p className="text-amber-700 dark:text-amber-300">
-            実装予定の機能: <br />
-            - データの永続化 (API連携やローカルストレージ) <br />
+            今後の拡張予定: <br />
+            - バックエンドAPIとの連携 <br />
             - 画像アップロード機能 <br />
             - 部員の並び順設定
           </p>

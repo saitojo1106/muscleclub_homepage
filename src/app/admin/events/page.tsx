@@ -1,12 +1,16 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Container from '@/app/_components/container';
 import Link from 'next/link';
 import { getAllEvents, addEvent, updateEvent, deleteEvent } from '@/lib/admin/event-service';
 import type { Event } from '@/lib/events';
 
 export default function EventsAdminPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [events, setEvents] = useState<Event[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -21,19 +25,24 @@ export default function EventsAdminPage() {
   });
   
   useEffect(() => {
-    // ローカルストレージから認証状態を確認
-    const auth = localStorage.getItem('admin_auth');
-    if (auth !== 'true') {
-      window.location.href = '/admin';
+    // 認証チェック - NextAuth
+    if (status === "unauthenticated") {
+      router.push("/admin/login");
       return;
     }
-    
-    fetchEvents();
-  }, []);
+
+    if (status === "authenticated") {
+      fetchEvents();
+    }
+  }, [status, router]);
   
   const fetchEvents = async () => {
-    const eventData = await getAllEvents();
-    setEvents(eventData);
+    try {
+      const eventData = await getAllEvents();
+      setEvents(eventData);
+    } catch (error) {
+      console.error('イベントの取得中にエラーが発生しました:', error);
+    }
   };
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,13 +52,16 @@ export default function EventsAdminPage() {
       if (isEditing) {
         await updateEvent(currentEvent);
       } else {
-        await addEvent(currentEvent);
+        // idを除外したオブジェクトをaddEventに渡す
+        const { id, ...eventWithoutId } = currentEvent;
+        await addEvent(eventWithoutId);
       }
       
       setIsFormVisible(false);
       fetchEvents();
     } catch (error) {
       console.error('イベントの保存中にエラーが発生しました:', error);
+      alert('エラーが発生しました。詳細はコンソールを確認してください。');
     }
   };
   
@@ -66,6 +78,7 @@ export default function EventsAdminPage() {
         fetchEvents();
       } catch (error) {
         console.error('イベントの削除中にエラーが発生しました:', error);
+        alert('エラーが発生しました。詳細はコンソールを確認してください。');
       }
     }
   };
@@ -75,13 +88,23 @@ export default function EventsAdminPage() {
     setCurrentEvent({ ...currentEvent, [name]: value });
   };
   
+  // ローディング中の表示
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+  
+  // 未認証の場合は何も表示しない（useEffectでリダイレクト処理をしているため）
+  if (!session) {
+    return null;
+  }
+  
   return (
     <main>
       <Container>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">イベント管理</h1>
-          <Link href="/admin" className="bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
-            管理画面トップへ戻る
+          <Link href="/admin/dashboard" className="bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+            ダッシュボードへ戻る
           </Link>
         </div>
         

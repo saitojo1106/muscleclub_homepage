@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Container from '@/app/_components/container';
 import Link from 'next/link';
 import { getAllPosts } from '@/lib/api';
@@ -14,22 +16,22 @@ type Post = {
 };
 
 export default function PostsAdminPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    // 認証チェック
-    const auth = localStorage.getItem('admin_auth');
-    if (auth !== 'true') {
-      window.location.href = '/admin';
+    // 認証チェック - NextAuth
+    if (status === "unauthenticated") {
+      router.push("/admin/login");
       return;
     }
-    setIsAuthenticated(true);
-    
-    // 記事を取得
-    fetchPosts();
-  }, []);
+
+    if (status === "authenticated") {
+      fetchPosts();
+    }
+  }, [status, router]);
   
   const fetchPosts = async () => {
     setIsLoading(true);
@@ -57,8 +59,14 @@ export default function PostsAdminPage() {
     alert('編集機能は現在開発中です。今後のアップデートをお待ちください。');
   };
   
-  if (!isAuthenticated) {
+  // ローディング中
+  if (status === "loading") {
     return <div>Loading...</div>;
+  }
+  
+  // 未認証の場合は何も表示しない
+  if (!session) {
+    return null;
   }
   
   return (
@@ -66,8 +74,8 @@ export default function PostsAdminPage() {
       <Container>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">ブログ管理</h1>
-          <Link href="/admin" className="bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
-            管理画面トップへ戻る
+          <Link href="/admin/dashboard" className="bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+            ダッシュボードへ戻る
           </Link>
         </div>
         
