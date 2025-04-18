@@ -29,7 +29,9 @@
 
 ## 📷 スクリーンショット
 
+<img width="1470" alt="スクリーンショット 2025-04-18 18 08 33" src="https://github.com/user-attachments/assets/b637c3d3-dd15-4b62-bbb2-7817add30dfe" />
 
 ---
 
 ## 🔗 公開URL / デモ
+https://muscleclub-honmepage.vercel.app/
