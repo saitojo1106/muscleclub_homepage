@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Container from "@/app/_components/container";
+import Container from '@/components/container';
 import Header from "@/app/_components/header";
 
 export default function LoginPage() {

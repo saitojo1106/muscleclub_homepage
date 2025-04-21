@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Container from '@/app/_components/container';
+import Container from '@/components/container';
 import Link from 'next/link';
 import { getAllEvents, addEvent, updateEvent, deleteEvent } from '@/lib/admin/event-service';
 import type { Event } from '@/lib/events';
