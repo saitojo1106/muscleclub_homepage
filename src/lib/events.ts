@@ -73,14 +73,14 @@ export function getAllEvents(): Event[] {
     return defaultEvents;
   }
   
-  const storedData = localStorage.getItem('muscle_club_events');
-  if (!storedData) {
-    // 初回のみ、デフォルトのイベントをセット
-    localStorage.setItem('muscle_club_events', JSON.stringify(defaultEvents));
-    return defaultEvents;
-  }
-  
   try {
+    const storedData = localStorage.getItem('muscle_club_events');
+    if (!storedData) {
+      // 初回のみ、デフォルトのイベントをセット
+      localStorage.setItem('muscle_club_events', JSON.stringify(defaultEvents));
+      return defaultEvents;
+    }
+    
     return JSON.parse(storedData);
   } catch (error) {
     console.error('イベントデータの解析中にエラーが発生しました:', error);
