@@ -1,11 +1,9 @@
 "use client";
 
 import Link from 'next/link';
-import { useAuth } from '@/app/auth/auth-context';
+import { signOut } from 'next-auth/react';
 
 export default function AdminHeader() {
-  const { logout } = useAuth();
-  
   return (
     <header className="bg-blue-600 text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
@@ -17,7 +15,7 @@ export default function AdminHeader() {
             サイトを表示
           </Link>
           <button 
-            onClick={logout}
+            onClick={() => signOut({ callbackUrl: '/' })}
             className="px-3 py-1 bg-white text-blue-600 rounded hover:bg-gray-100 transition-colors"
           >
             ログアウト

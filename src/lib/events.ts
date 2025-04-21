@@ -1,11 +1,12 @@
+// イベントの型定義
 export type Event = {
   id: number;
   title: string;
   date: string;
   location: string;
   description: string;
-  requirements: string;
-  fee: string;
+  requirements?: string;
+  fee?: string;
 };
 
 // デフォルトのイベントデータ
