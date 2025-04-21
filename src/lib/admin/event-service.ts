@@ -1,29 +1,17 @@
+// src/lib/admin/event-service.ts
 import type { Event } from '@/lib/events';
 
-// ローカルストレージを使用したシンプルな実装
-// 本番環境では実際のAPIを使用する
-
-const STORAGE_KEY = 'muscle_club_events';
+const STORAGE_KEY = 'muscleclub_events';
 
 // 全てのイベントを取得
 export async function getAllEvents(): Promise<Event[]> {
+  // ブラウザ環境でない場合は空の配列を返す（SSRなどの場合）
   if (typeof window === 'undefined') return [];
   
   const storedData = localStorage.getItem(STORAGE_KEY);
   if (!storedData) return [];
   
-  try {
-    return JSON.parse(storedData);
-  } catch (error) {
-    console.error('イベントの取得中にエラーが発生しました:', error);
-    return [];
-  }
-}
-
-// 単一のイベントを取得
-export async function getEventById(id: number): Promise<Event | null> {
-  const events = await getAllEvents();
-  return events.find(event => event.id === id) || null;
+  return JSON.parse(storedData);
 }
 
 // 新しいイベントを追加
@@ -41,24 +29,22 @@ export async function addEvent(event: Omit<Event, 'id'>): Promise<Event> {
 }
 
 // イベントを更新
-export async function updateEvent(event: Event): Promise<Event> {
+export async function updateEvent(updatedEvent: Event): Promise<Event> {
   const events = await getAllEvents();
-  const index = events.findIndex(e => e.id === event.id);
   
-  if (index === -1) {
-    throw new Error(`ID ${event.id} のイベントが見つかりません`);
-  }
+  const updatedEvents = events.map(event => 
+    event.id === updatedEvent.id ? updatedEvent : event
+  );
   
-  events[index] = event;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedEvents));
   
-  return event;
+  return updatedEvent;
 }
 
 // イベントを削除
 export async function deleteEvent(id: number): Promise<void> {
   const events = await getAllEvents();
-  const updatedEvents = events.filter(event => event.id !== id);
   
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedEvents));
+  const filteredEvents = events.filter(event => event.id !== id);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredEvents));
 }
