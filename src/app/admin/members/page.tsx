@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Container from '@/components/container';
+import Container from '@/app/_components/container';
 import Link from 'next/link';
 import { getAllMembers, addMember, updateMember, deleteMember, loadSampleData } from '@/lib/admin/member-service';
 

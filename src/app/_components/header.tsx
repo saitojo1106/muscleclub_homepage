@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-const Header = () => {
+// default exportに変更
+export default function Header() {
   return (
     <header className="flex flex-col md:flex-row justify-between items-center mb-16 mt-8">
       <h2 className="text-2xl md:text-4xl font-bold tracking-tight md:tracking-tighter leading-tight mb-4 md:mb-0">
@@ -27,6 +28,4 @@ const Header = () => {
       </nav>
     </header>
   );
-};
-
-export default Header;
+}

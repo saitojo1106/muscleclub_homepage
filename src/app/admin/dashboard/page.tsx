@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import Container from '@/components/container';
+import Container from '@/app/_components/container';
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 
