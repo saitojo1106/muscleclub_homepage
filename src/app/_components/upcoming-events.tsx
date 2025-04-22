@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Event, getAllEvents } from '@/lib/events';
+import { Event, getFutureEvents } from '@/lib/events';
 
 export default function UpcomingEvents() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -11,15 +11,10 @@ export default function UpcomingEvents() {
   useEffect(() => {
     const loadEvents = async () => {
       try {
-        const allEvents = await getAllEvents();
-        // 未来のイベントのみを表示、日付順に並び替え
-        const now = new Date();
-        const futureEvents = allEvents
-          .filter(event => new Date(event.date) >= now)
-          .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-          .slice(0, 3); // 最大3件表示
-        
-        setEvents(futureEvents);
+        // Supabaseから未来のイベントを取得
+        const futureEvents = await getFutureEvents();
+        // 最大3件を表示
+        setEvents(futureEvents.slice(0, 3));
       } catch (error) {
         console.error('イベント取得エラー:', error);
       } finally {
@@ -35,7 +30,7 @@ export default function UpcomingEvents() {
   }
   
   if (events.length === 0) {
-    return null; // イベントがない場合は何も表示しない
+    return null;
   }
   
   return (
@@ -44,27 +39,24 @@ export default function UpcomingEvents() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {events.map(event => (
           <div key={event.id} className="bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden">
-            <div className="p-6">
-              <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-              <div className="text-gray-600 dark:text-gray-300 mb-2">
-                📅 {new Date(event.date).toLocaleDateString('ja-JP')}
-              </div>
-              <div className="text-gray-600 dark:text-gray-300 mb-4">
-                📍 {event.location}
-              </div>
-              <p className="text-gray-700 dark:text-gray-400 mb-4 line-clamp-3">
-                {event.description}
-              </p>
-              <button 
-                onClick={() => {
-                  // モーダルで詳細表示するか、イベント詳細ページができるまでは単純なアラート
-                  alert(`${event.title}\n\n日時: ${new Date(event.date).toLocaleDateString('ja-JP')}\n場所: ${event.location}\n\n${event.description}`);
-                }}
-                className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-              >
+            <h3 className="font-bold text-lg">{event.title}</h3>
+            <p>日時: {new Date(event.date).toLocaleDateString('ja-JP')}</p>
+            <p>場所: {event.location}</p>
+            {event.image_url && (
+              <img 
+                src={event.image_url} 
+                alt={event.title} 
+                className="mt-2 rounded"
+                width={300}
+                height={200}
+                style={{ objectFit: 'cover' }}
+              />
+            )}
+            <Link href={`/events/${event.id}`}>
+              <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
                 詳細を見る
               </button>
-            </div>
+            </Link>
           </div>
         ))}
       </div>

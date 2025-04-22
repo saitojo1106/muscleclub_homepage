@@ -8,9 +8,10 @@ export const metadata = {
   description: 'マッスルクラブの大会・イベント情報カレンダー',
 };
 
-export default function EventsPage() {
-  // サーバーサイドでイベントを取得
-  const allEvents = getAllEvents();
+// Next.js 13以降のサーバーコンポーネント
+export default async function EventsPage() {
+  // サーバーサイドでイベントデータを取得
+  const events = await getAllEvents();
   const futureEvents = getFutureEvents();
 
   return (
@@ -19,7 +20,7 @@ export default function EventsPage() {
         <Header />
         <h1 className="text-4xl font-bold mb-8 text-center">イベントカレンダー</h1>
         
-        <EventCalendar events={allEvents} />
+        <EventCalendar events={events} />
         
         <div className="mt-16">
           <h2 className="text-2xl font-bold mb-6">今後のイベント</h2>
@@ -50,6 +51,20 @@ export default function EventsPage() {
               現在予定されている今後のイベントはありません
             </p>
           )}
+        </div>
+
+        <div>
+          <h1>イベント一覧</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {events.map(event => (
+              <div key={event.id} className="event-card">
+                <h2>{event.title}</h2>
+                <p>日付: {new Date(event.date).toLocaleDateString('ja-JP')}</p>
+                <p>場所: {event.location}</p>
+                {event.description && <p>{event.description}</p>}
+              </div>
+            ))}
+          </div>
         </div>
       </Container>
     </main>
