@@ -1,9 +1,17 @@
 "use client";
 
 import Link from 'next/link';
-import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { logout } from '@/lib/authUtils';
 
 export default function AdminHeader() {
+  const router = useRouter();
+  
+  const handleLogout = () => {
+    logout();
+    router.push('/admin/login');
+  };
+  
   return (
     <header className="bg-blue-600 text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
@@ -15,7 +23,7 @@ export default function AdminHeader() {
             サイトを表示
           </Link>
           <button 
-            onClick={() => signOut({ callbackUrl: '/' })}
+            onClick={handleLogout}
             className="px-3 py-1 bg-white text-blue-600 rounded hover:bg-gray-100 transition-colors"
           >
             ログアウト
