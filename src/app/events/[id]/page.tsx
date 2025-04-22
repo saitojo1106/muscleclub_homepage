@@ -2,71 +2,14 @@ import { notFound } from 'next/navigation';
 import Container from '@/app/_components/container';
 import Header from '@/app/_components/header';
 import Link from 'next/link';
-
-// 大会・イベントデータ (実際の実装では別ファイルに移動するとよいでしょう)
-const events = [
-  {
-    id: 1,
-    title: "マッスルゲート仙台2024",
-    date: "2024-08-15",
-    location: "仙台電力ホール",
-    description: "全国から集まった学生ボディビルダーたちとの熱い戦いです。マッスルクラブからも複数名が出場予定です。",
-    requirements: "参加には事前登録が必要です。",
-    fee: "観覧料: 2,000円、参加費: 5,000円",
-  },
-  {
-    id: 2,
-    title: "マッスルゲート仙台",
-    date: "2023-08-15",
-    location: "仙台電力ホール",
-    description: "学生ボディビルコンテストです。昨年度は大変盛り上がりました。",
-    requirements: "過去の大会記録です。",
-    fee: "観覧料: 1,800円、参加費: 4,800円",
-  },
-  {
-    id: 3,
-    title: "宮城選手権ボディビル大会",
-    date: "2024-08-02",
-    location: "仙台市体育館",
-    description: "宮城県内の競技者が集まる大会です。各カテゴリーでの熱い戦いが予想されます。",
-    requirements: "参加にはJBBFの会員登録が必要です。",
-    fee: "観覧料: 2,500円、参加費: 8,000円",
-  },
-  {
-    id: 100,
-    title: 'マッスルクラブ夏合宿',
-    date: '2024-08-20',
-    location: '青葉区体育館',
-    description: "3日間の集中トレーニング合宿です。食事管理も含めた総合プログラムを実施します。",
-    requirements: "部員限定イベントです。",
-    fee: "参加費: 12,000円（食事代込み）",
-  },
-  {
-    id: 101,
-    title: '初心者向けトレーニング講座',
-    date: '2024-09-10',
-    location: 'オンライン',
-    description: "筋トレ初心者向けの基礎講座です。正しいフォームと効果的なトレーニング方法を学べます。",
-    requirements: "特に条件はありません。どなたでも参加いただけます。",
-    fee: "参加費: 1,000円",
-  },
-  {
-    id: 102,
-    title: '第2回筋トレコンテスト',
-    date: '2024-10-15',
-    location: '仙台サンプラザホール',
-    description: "マッスルクラブ主催の筋トレコンテストです。種目ごとの記録を競います。",
-    requirements: "会員登録が必要です。",
-    fee: "参加費: 3,000円",
-  },
-];
+import { getEventById, getAllEvents } from '@/lib/events';
 
 export default function EventDetailPage({ params }: { params: { id: string } }) {
   const eventId = parseInt(params.id);
-  const event = events.find(e => e.id === eventId);
+  const event = getEventById(eventId);
   
   if (!event) {
-    return notFound();
+    notFound();
   }
   
   return (
@@ -146,7 +89,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
 
 export function generateMetadata({ params }: { params: { id: string } }) {
   const eventId = parseInt(params.id);
-  const event = events.find(e => e.id === eventId);
+  const event = getEventById(eventId);
   
   if (!event) {
     return {
@@ -161,7 +104,7 @@ export function generateMetadata({ params }: { params: { id: string } }) {
 }
 
 export function generateStaticParams() {
-  return events.map((event) => ({
+  return getAllEvents().map((event) => ({
     id: event.id.toString(),
   }));
 }

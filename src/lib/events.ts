@@ -104,3 +104,44 @@ export function getEventById(id: number): Event | undefined {
   const allEvents = getAllEvents();
   return allEvents.find(event => event.id === id);
 }
+
+// イベントを保存（プライベート関数）
+function saveEvents(events: Event[]): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('muscle_club_events', JSON.stringify(events));
+  }
+}
+
+// 新しいイベントを追加
+export function addEvent(event: Omit<Event, 'id'>): Event {
+  const events = getAllEvents();
+  const maxId = events.reduce((max, evt) => Math.max(max, evt.id), 0);
+  
+  const newEvent: Event = {
+    ...event,
+    id: maxId + 1
+  };
+  
+  const updatedEvents = [...events, newEvent];
+  saveEvents(updatedEvents);
+  
+  return newEvent;
+}
+
+// イベントを更新
+export function updateEvent(event: Event): Event {
+  const events = getAllEvents();
+  const updatedEvents = events.map(evt => 
+    evt.id === event.id ? event : evt
+  );
+  
+  saveEvents(updatedEvents);
+  return event;
+}
+
+// イベントを削除
+export function deleteEvent(id: number): void {
+  const events = getAllEvents();
+  const filteredEvents = events.filter(event => event.id !== id);
+  saveEvents(filteredEvents);
+}

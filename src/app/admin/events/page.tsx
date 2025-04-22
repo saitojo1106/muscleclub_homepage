@@ -5,20 +5,13 @@ import { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
 import AdminHeader from '../_components/admin-header';
 import { isAuthenticated } from '@/lib/authUtils';
-
-// イベント型定義
-type Event = {
-  id: number;
-  title: string;
-  date: string;
-  location: string;
-  description: string;
-  requirements?: string;
-  fee?: string;
-};
-
-// ローカルストレージのキー
-const LOCAL_STORAGE_KEY = 'muscle_club_events';
+import { 
+  Event, 
+  getAllEvents, 
+  addEvent, 
+  updateEvent, 
+  deleteEvent 
+} from '@/lib/events';
 
 export default function EventsManagementPage() {
   const router = useRouter();
@@ -45,35 +38,8 @@ export default function EventsManagementPage() {
     // データの初期ロード
     const loadEvents = () => {
       try {
-        const storedData = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (storedData) {
-          setEvents(JSON.parse(storedData));
-        } else {
-          // サンプルデータをロード
-          const sampleEvents = [
-            {
-              id: 1,
-              title: "マッスルゲート仙台2024",
-              date: "2024-08-15",
-              location: "仙台電力ホール",
-              description: "全国から集まった学生ボディビルダーたちとの熱い戦いです。",
-              requirements: "参加には事前登録が必要です。",
-              fee: "観覧料: 2,000円、参加費: 5,000円",
-            },
-            {
-              id: 2,
-              title: "初心者向けトレーニング講座",
-              date: "2024-09-10",
-              location: "オンライン",
-              description: "筋トレ初心者向けの基礎講座です。",
-              requirements: "どなたでも参加いただけます",
-              fee: "参加費: 1,000円",
-            }
-          ];
-          
-          setEvents(sampleEvents);
-          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(sampleEvents));
-        }
+        const allEvents = getAllEvents();
+        setEvents(allEvents);
         setLoading(false);
       } catch (error) {
         console.error('イベントデータの読み込みエラー:', error);
@@ -94,20 +60,13 @@ export default function EventsManagementPage() {
     
     if (isEditing) {
       // イベントの更新
-      const updatedEvents = events.map(event => 
-        event.id === currentEvent.id ? currentEvent : event
-      );
-      setEvents(updatedEvents);
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedEvents));
+      const updated = updateEvent(currentEvent);
+      setEvents(getAllEvents());
     } else {
       // 新しいイベントの追加
-      const newEvent = {
-        ...currentEvent,
-        id: Date.now(), // 簡易的なID生成
-      };
-      const updatedEvents = [...events, newEvent];
-      setEvents(updatedEvents);
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedEvents));
+      const { id, ...eventWithoutId } = currentEvent;
+      const newEvent = addEvent(eventWithoutId);
+      setEvents(getAllEvents());
     }
     
     // フォームのリセット
@@ -130,9 +89,8 @@ export default function EventsManagementPage() {
 
   const handleDelete = (id: number) => {
     if (confirm('このイベントを削除してもよろしいですか？')) {
-      const updatedEvents = events.filter(event => event.id !== id);
-      setEvents(updatedEvents);
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedEvents));
+      deleteEvent(id);
+      setEvents(getAllEvents());
     }
   };
 

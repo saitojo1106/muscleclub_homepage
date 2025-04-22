@@ -2,8 +2,7 @@ import Footer from "@/app/_components/footer";
 import { HOME_OG_IMAGE_URL } from "@/lib/constants";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import cn from "classnames";
-import ThemeSwitcherWithScript from "./_components/theme-switcher";
+import { ThemeScript } from "./_components/theme-switcher";
 import { Providers } from "./providers";
 
 import "./globals.css";
@@ -24,9 +23,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja">
-      <body>
+    <html lang="ja" suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
+      <body className={inter.className}>
         <Providers>{children}</Providers>
+        <Footer />
       </body>
     </html>
   );
