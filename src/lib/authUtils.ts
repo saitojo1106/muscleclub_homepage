@@ -4,39 +4,39 @@ const AUTH_TOKEN_KEY = 'muscle_club_admin_token';
 
 // 単純なログイン関数
 export function login(username: string, password: string): boolean {
-  // 固定の認証情報
+  // 開発用の簡易認証
   if (username === 'admin' && password === 'muscleclub2024') {
-    // 認証トークンをローカルストレージに保存
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(AUTH_TOKEN_KEY, JSON.stringify({
-        user: { name: 'Administrator', role: 'admin' },
-        expires: Date.now() + 24 * 60 * 60 * 1000 // 24時間後に期限切れ
-      }));
-    }
+    const tokenData = {
+      user: { username: 'admin', role: 'admin' },
+      expires: Date.now() + 24 * 60 * 60 * 1000 // 24時間有効
+    };
+    
+    localStorage.setItem('auth_token', JSON.stringify(tokenData));
     return true;
   }
+  
   return false;
 }
 
 // ログアウト関数
 export function logout(): void {
   if (typeof window !== 'undefined') {
-    localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem('auth_token');
   }
 }
 
 // 認証状態確認関数
 export function isAuthenticated(): boolean {
   if (typeof window === 'undefined') {
-    return false; // サーバーサイドレンダリング時は未認証扱い
+    return false; // サーバーサイドでは常にfalse
   }
-
+  
   try {
-    const authData = localStorage.getItem(AUTH_TOKEN_KEY);
-    if (!authData) return false;
+    const token = localStorage.getItem('auth_token');
+    if (!token) return false;
     
-    const { expires } = JSON.parse(authData);
-    return Date.now() < expires;
+    const data = JSON.parse(token);
+    return Date.now() < data.expires;
   } catch (error) {
     return false;
   }
@@ -49,7 +49,7 @@ export function getUser() {
   }
 
   try {
-    const authData = localStorage.getItem(AUTH_TOKEN_KEY);
+    const authData = localStorage.getItem('auth_token');
     if (!authData) return null;
     
     const { user, expires } = JSON.parse(authData);
