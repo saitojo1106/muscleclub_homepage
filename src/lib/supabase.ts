@@ -8,23 +8,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Supabase環境変数が設定されていません。');
   if (typeof window !== 'undefined') {
     // クライアントサイドのみ
-    alert('Supabase設定エラー: 管理者に連絡してください');
+    console.warn('Supabase設定エラー: .env.localファイルを確認してください');
   }
 }
 
 // Supabaseクライアントの作成
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Supabaseのテーブル型定義
-export type Event = {
-  id: number;
-  title: string;
-  date: string;
-  location: string;
-  description: string | null;
-  requirements: string | null;
-  fee: string | null;
-  image_url: string | null;
-  created_at: string;
-  updated_at: string;
-};

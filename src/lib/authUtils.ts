@@ -2,41 +2,64 @@ import { supabase } from './supabase';
 
 const AUTH_TOKEN_KEY = 'muscle_club_admin_token';
 
-// ログイン
-export async function login(email: string, password: string) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-  
-  if (error) {
-    console.error('ログインエラー:', error);
-    return { success: false, error: error.message };
+// 単純なログイン関数
+export function login(username: string, password: string): boolean {
+  // 固定の認証情報
+  if (username === 'admin' && password === 'muscleclub2024') {
+    // 認証トークンをローカルストレージに保存
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(AUTH_TOKEN_KEY, JSON.stringify({
+        user: { name: 'Administrator', role: 'admin' },
+        expires: Date.now() + 24 * 60 * 60 * 1000 // 24時間後に期限切れ
+      }));
+    }
+    return true;
   }
-  
-  return { success: true, user: data.user };
+  return false;
 }
 
-// ログアウト
-export async function logout() {
-  const { error } = await supabase.auth.signOut();
-  
-  if (error) {
-    console.error('ログアウトエラー:', error);
-    return { success: false, error: error.message };
+// ログアウト関数
+export function logout(): void {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(AUTH_TOKEN_KEY);
   }
-  
-  return { success: true };
 }
 
-// 認証状態確認
-export async function isAuthenticated() {
-  const { data } = await supabase.auth.getSession();
-  return !!data.session;
+// 認証状態確認関数
+export function isAuthenticated(): boolean {
+  if (typeof window === 'undefined') {
+    return false; // サーバーサイドレンダリング時は未認証扱い
+  }
+
+  try {
+    const authData = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!authData) return false;
+    
+    const { expires } = JSON.parse(authData);
+    return Date.now() < expires;
+  } catch (error) {
+    return false;
+  }
 }
 
-// 現在のユーザー情報取得
-export async function getCurrentUser() {
-  const { data } = await supabase.auth.getUser();
-  return data.user;
+// ユーザー情報取得関数
+export function getUser() {
+  if (typeof window === 'undefined') {
+    return null; // サーバーサイドレンダリング時はnull
+  }
+
+  try {
+    const authData = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (!authData) return null;
+    
+    const { user, expires } = JSON.parse(authData);
+    if (Date.now() > expires) {
+      logout();
+      return null;
+    }
+    
+    return user;
+  } catch (error) {
+    return null;
+  }
 }
