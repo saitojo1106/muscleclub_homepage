@@ -1,4 +1,4 @@
-import type { Member } from '@/app/admin/members/page'; // 型定義をインポート
+import type { Member } from '@/types'; // 型定義をインポート
 
 // ローカルストレージを使用したシンプルな実装
 // 本番環境では実際のAPIを使用する

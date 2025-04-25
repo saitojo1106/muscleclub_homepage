@@ -3,44 +3,58 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getFutureEvents } from '@/lib/events';
+import { Event, getFutureEvents } from '@/lib/events';
 
 export default function EventCountdown() {
   const [timeLeft, setTimeLeft] = useState('');
-  const [nextEvent, setNextEvent] = useState(getFutureEvents()[0]); // 最も近いイベント
+  const [nextEvent, setNextEvent] = useState<Event | null>(null); // 型を明示的に指定
+  
+  useEffect(() => {
+    // 将来のイベントを非同期で取得
+    const loadNextEvent = async () => {
+      try {
+        const futureEvents = await getFutureEvents();
+        if (futureEvents.length > 0) {
+          setNextEvent(futureEvents[0]); // 最も近いイベント
+        }
+      } catch (error) {
+        console.error('イベント取得エラー:', error);
+      }
+    };
+    
+    loadNextEvent();
+  }, []);
   
   useEffect(() => {
     if (!nextEvent) return;
     
-    // 初回実行
-    updateCountdown();
+    // カウントダウン機能の実装
+    const calculateTimeLeft = () => {
+      const eventDate = new Date(nextEvent.date);
+      const now = new Date();
+      const difference = eventDate.getTime() - now.getTime();
+      
+      if (difference <= 0) {
+        setTimeLeft('イベントは開始しました！');
+        return;
+      }
+      
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+      
+      setTimeLeft(`${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`);
+    };
     
-    const timer = setInterval(updateCountdown, 60000); // 1分ごとに更新
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
     
     return () => clearInterval(timer);
   }, [nextEvent]);
   
-  const updateCountdown = () => {
-    if (!nextEvent) return;
-    
-    const now = new Date();
-    const eventDate = new Date(nextEvent.date);
-    const diff = eventDate.getTime() - now.getTime();
-    
-    if (diff <= 0) {
-      setTimeLeft('イベント開催中！');
-      return;
-    }
-    
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    
-    setTimeLeft(`${days}日 ${hours}時間 ${minutes}分`);
-  };
-  
   if (!nextEvent) {
-    return null;
+    return null; // イベントが読み込まれるまで何も表示しない
   }
   
   return (

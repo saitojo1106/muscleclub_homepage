@@ -28,7 +28,7 @@ const members = [
   {
     id: 1,
     name: "齋藤　丈",
-    role: "エース",
+    position: "エース",
     year: "3年生",
     image: "/assets/members/pro_D2PyqRsQ.jpeg", // 実際の画像パスに置き換えてください
     speciality: "ベンチプレス",
@@ -39,7 +39,7 @@ const members = [
   {
     id: 2,
     name: "山田 孝翔",
-    role: "副部長",
+    position: "副部長",
     year: "2年生",
     image: "/assets/members/pro_xPtf0FWG.jpeg", // 実際の画像パスに置き換えてください
     speciality: "デッドリフト",
@@ -50,7 +50,7 @@ const members = [
   {
     id: 3,
     name: "皆川 隼人",
-    role: "卒業生",
+    position: "卒業生",
     year: "４年生",
     image: "/assets/members/minakawa.jpg", // 実際の画像パスに置き換えてください
     speciality: "ベンチプレス",

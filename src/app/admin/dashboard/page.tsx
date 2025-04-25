@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AdminHeader from "../_components/admin-header";
-import { isAuthenticated } from "@/lib/authUtils";
+import { isAuthenticated } from "@/lib/auth"; // 修正: authUtils を auth に変更
 
 export default function DashboardPage() {
   const router = useRouter();

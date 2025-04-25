@@ -4,8 +4,9 @@ import Header from '@/app/_components/header';
 import Link from 'next/link';
 import { getEventById, getAllEvents } from '@/lib/events';
 
-export default function EventDetailPage({ params }: { params: { id: string } }) {
-  const eventId = parseInt(params.id);
+export default async function EventPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const eventId = parseInt(resolvedParams.id);
   const event = getEventById(eventId);
   
   if (!event) {
@@ -72,7 +73,6 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
             </p>
           </div>
           
-          {/* 申し込みボタンなど */}
           <div className="flex flex-wrap gap-4">
             <button className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors">
               このイベントに申し込む
@@ -87,8 +87,9 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
   );
 }
 
-export function generateMetadata({ params }: { params: { id: string } }) {
-  const eventId = parseInt(params.id);
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const eventId = parseInt(resolvedParams.id);
   const event = getEventById(eventId);
   
   if (!event) {
@@ -103,8 +104,9 @@ export function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
-export function generateStaticParams() {
-  return getAllEvents().map((event) => ({
+export async function generateStaticParams() {
+  const events = await getAllEvents();
+  return events.map((event) => ({
     id: event.id.toString(),
   }));
 }

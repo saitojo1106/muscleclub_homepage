@@ -6,10 +6,11 @@ import { login, isAuthenticated } from "@/lib/auth";
 import Link from "next/link";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const router = useRouter();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   
   useEffect(() => {
     // 既に認証されている場合はダッシュボードにリダイレクト
@@ -18,70 +19,87 @@ export default function LoginPage() {
     }
   }, [router]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!username || !password) {
+      setError("ユーザー名とパスワードを入力してください");
+      return;
+    }
+    
+    setIsLoading(true);
     setError("");
-
-    if (login(username, password)) {
-      router.push('/admin/dashboard');
-    } else {
-      setError("ユーザー名またはパスワードが間違っています");
+    
+    try {
+      // await を使って login の結果を待機
+      const success = await login(username, password);
+      
+      if (success) {
+        router.push('/admin/dashboard');
+      } else {
+        setError("ユーザー名またはパスワードが間違っています");
+      }
+    } catch (err) {
+      console.error("ログイン中にエラーが発生しました:", err);
+      setError("ログイン処理中にエラーが発生しました");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-slate-900 flex items-center justify-center">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white dark:bg-slate-800 rounded-lg shadow">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold">マッスルクラブ 管理画面</h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
-            ログインして管理機能を利用する
-          </p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+      <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
+        <div>
+          <h2 className="text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+            管理者ログイン
+          </h2>
         </div>
-
-        {error && (
-          <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 p-4 rounded">
-            {error}
-          </div>
-        )}
-
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          {error && (
+            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded" role="alert">
+              <p>{error}</p>
+            </div>
+          )}
+          
           <div>
-            <label htmlFor="username" className="block text-sm font-medium">
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               ユーザー名
             </label>
             <input
               id="username"
-              name="username"
               type="text"
-              required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="block w-full px-3 py-2 mt-1 border border-gray-300 dark:border-gray-600 dark:bg-slate-700 rounded-md"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
-
+          
           <div>
-            <label htmlFor="password" className="block text-sm font-medium">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               パスワード
             </label>
             <input
               id="password"
-              name="password"
               type="password"
-              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="block w-full px-3 py-2 mt-1 border border-gray-300 dark:border-gray-600 dark:bg-slate-700 rounded-md"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
-
+          
           <div>
             <button
               type="submit"
-              className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none"
+              disabled={isLoading}
+              className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                isLoading 
+                  ? 'bg-blue-400 cursor-not-allowed' 
+                  : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+              }`}
             >
-              ログイン
+              {isLoading ? 'ログイン中...' : 'ログイン'}
             </button>
           </div>
         </form>
