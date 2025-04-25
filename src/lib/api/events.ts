@@ -1,6 +1,15 @@
-// src/lib/api/events.ts
 import { supabase } from '../supabase';
-import type { Event, Entity } from '@/types'; // Entityをインポートに追加
+
+export type Event = {
+  id: number;
+  title: string;
+  date: string;
+  location: string;
+  description?: string;
+  requirements?: string;
+  fee?: string;
+  image_url?: string;
+};
 
 // すべてのイベントを取得
 export async function getAllEvents(): Promise<Event[]> {
@@ -10,10 +19,14 @@ export async function getAllEvents(): Promise<Event[]> {
       .select('*')
       .order('date', { ascending: true });
     
-    if (error) throw error;
+    if (error) {
+      console.error('イベント取得エラー:', error);
+      throw error;
+    }
+    
     return data || [];
   } catch (error) {
-    console.error('イベント取得エラー:', error);
+    console.error('イベント取得中にエラーが発生しました:', error);
     return [];
   }
 }
@@ -29,10 +42,14 @@ export async function getFutureEvents(): Promise<Event[]> {
       .gte('date', today)
       .order('date', { ascending: true });
     
-    if (error) throw error;
+    if (error) {
+      console.error('イベント取得エラー:', error);
+      throw error;
+    }
+    
     return data || [];
   } catch (error) {
-    console.error('イベント取得エラー:', error);
+    console.error('イベント取得中にエラーが発生しました:', error);
     return [];
   }
 }
@@ -63,16 +80,20 @@ export async function addEvent(event: Omit<Event, 'id'>): Promise<Event | null> 
       .select()
       .single();
     
-    if (error) throw error;
+    if (error) {
+      console.error('イベント追加エラー:', error);
+      return null;
+    }
+    
     return data;
   } catch (error) {
-    console.error('イベント追加エラー:', error);
+    console.error('イベント追加中にエラーが発生しました:', error);
     return null;
   }
 }
 
 // イベントを更新
-export async function updateEvent(id: number, updates: Partial<Event>): Promise<Event | null> {
+export async function updateEvent(id: number, updates: Partial<Omit<Event, 'id'>>): Promise<Event | null> {
   try {
     const { data, error } = await supabase
       .from('events')
@@ -81,10 +102,14 @@ export async function updateEvent(id: number, updates: Partial<Event>): Promise<
       .select()
       .single();
     
-    if (error) throw error;
+    if (error) {
+      console.error(`ID ${id} のイベント更新エラー:`, error);
+      return null;
+    }
+    
     return data;
   } catch (error) {
-    console.error(`イベント更新エラー (ID: ${id}):`, error);
+    console.error(`イベント更新中にエラーが発生しました:`, error);
     return null;
   }
 }
@@ -97,94 +122,14 @@ export async function deleteEvent(id: number): Promise<boolean> {
       .delete()
       .eq('id', id);
     
-    if (error) throw error;
+    if (error) {
+      console.error(`ID ${id} のイベント削除エラー:`, error);
+      return false;
+    }
+    
     return true;
   } catch (error) {
-    console.error(`イベント削除エラー (ID: ${id}):`, error);
-    return false;
-  }
-}
-
-// すべてのエンティティを取得
-export async function getAll(): Promise<Entity[]> {
-  try {
-    const { data, error } = await supabase
-      .from('entities')
-      .select('*')
-      .order('created_at', { ascending: false });
-    
-    if (error) throw error;
-    return data || [];
-  } catch (error) {
-    console.error('データ取得エラー:', error);
-    return [];
-  }
-}
-
-// 特定のIDのエンティティを取得
-export async function getById(id: number): Promise<Entity | null> {
-  try {
-    const { data, error } = await supabase
-      .from('entities')
-      .select('*')
-      .eq('id', id)
-      .single();
-    
-    if (error) throw error;
-    return data;
-  } catch (error) {
-    console.error(`ID ${id} のデータ取得エラー:`, error);
-    return null;
-  }
-}
-
-// 新しいエンティティを追加
-export async function add(entity: Omit<Entity, 'id'>): Promise<Entity | null> {
-  try {
-    const { data, error } = await supabase
-      .from('entities')
-      .insert([entity])
-      .select()
-      .single();
-    
-    if (error) throw error;
-    return data;
-  } catch (error) {
-    console.error('データ追加エラー:', error);
-    return null;
-  }
-}
-
-// エンティティを更新
-export async function update(id: number, updates: Partial<Omit<Entity, 'id'>>): Promise<Entity | null> {
-  try {
-    const { data, error } = await supabase
-      .from('entities')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single();
-    
-    if (error) throw error;
-    return data;
-  } catch (error) {
-    console.error(`データ更新エラー (ID: ${id}):`, error);
-    return null;
-  }
-}
-
-// エンティティを削除
-export async function remove(id: number): Promise<boolean> {
-  try {
-    const { error } = await supabase
-      .from('entities')
-      .delete()
-      .eq('id', id);
-    
-    if (error) throw error;
-    return true;
-  } catch (error) {
-    console.error(`データ削除エラー (ID: ${id}):`, error);
+    console.error(`イベント削除中にエラーが発生しました:`, error);
     return false;
   }
 }

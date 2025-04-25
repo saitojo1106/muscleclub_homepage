@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
 import AdminHeader from '../_components/admin-header';
 import { isAuthenticated, login, logout, getUser } from '@/lib/auth';
-import { Event, getAllEvents, addEvent, updateEvent, deleteEvent } from '@/lib/events';
+import { Event, getAllEvents, addEvent, updateEvent, deleteEvent } from '@/lib/api/events';
 import ImageUpload from '@/app/_components/image-upload';
 import Image from 'next/image';
 
