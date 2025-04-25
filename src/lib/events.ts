@@ -31,7 +31,7 @@ export async function getAllEvents(): Promise<Event[]> {
   }
 }
 
-// 未来のイベントのみを取得
+// 将来のイベントを取得
 export async function getFutureEvents(): Promise<Event[]> {
   try {
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD形式

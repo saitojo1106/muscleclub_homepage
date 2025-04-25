@@ -11,7 +11,9 @@ export function login(username: string, password: string): boolean {
       expires: Date.now() + 24 * 60 * 60 * 1000 // 24時間有効
     };
     
-    localStorage.setItem('auth_token', JSON.stringify(tokenData));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(AUTH_TOKEN_KEY, JSON.stringify(tokenData));
+    }
     return true;
   }
   
@@ -21,7 +23,7 @@ export function login(username: string, password: string): boolean {
 // ログアウト関数
 export function logout(): void {
   if (typeof window !== 'undefined') {
-    localStorage.removeItem('auth_token');
+    localStorage.removeItem(AUTH_TOKEN_KEY);
   }
 }
 
@@ -32,7 +34,7 @@ export function isAuthenticated(): boolean {
   }
   
   try {
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
     if (!token) return false;
     
     const data = JSON.parse(token);
@@ -49,7 +51,7 @@ export function getUser() {
   }
 
   try {
-    const authData = localStorage.getItem('auth_token');
+    const authData = localStorage.getItem(AUTH_TOKEN_KEY);
     if (!authData) return null;
     
     const { user, expires } = JSON.parse(authData);

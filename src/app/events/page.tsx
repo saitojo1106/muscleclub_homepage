@@ -12,7 +12,7 @@ export const metadata = {
 export default async function EventsPage() {
   // サーバーサイドでイベントデータを取得
   const events = await getAllEvents();
-  const futureEvents = getFutureEvents();
+  const futureEvents = await getFutureEvents(); // awaitを追加
 
   return (
     <main>
