@@ -90,7 +90,7 @@ export default function MembersAdminPage() {
                   {members.map((member) => (
                     <tr key={member.id} className="hover:bg-gray-50 dark:hover:bg-slate-700">
                       <td className="py-3 px-4">{member.name}</td>
-                      <td className="py-3 px-4">{member.role}</td>
+                      <td className="py-3 px-4">{member.position}</td> {/* role を position に変更 */}
                       <td className="py-3 px-4">
                         <div className="flex gap-2">
                           <button onClick={() => handleEdit(member.id)} className="text-blue-500 hover:text-blue-700">編集</button>

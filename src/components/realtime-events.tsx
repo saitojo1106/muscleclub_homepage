@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Event } from '@/types/database';
+import { Event } from '@/types'; // 修正後: 正しいパスからイベント型をインポート
 
 export default function RealtimeEvents() {
   const [events, setEvents] = useState<Event[]>([]);

@@ -95,7 +95,7 @@ export default function MembersPage() {
                   <div className="flex justify-between items-start mb-2">
                     <h2 className="text-2xl font-bold">{member.name}</h2>
                     <div className="text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
-                      {member.role}
+                      {member.position}
                     </div>
                   </div>
                   <p className="text-gray-500 dark:text-gray-400 mb-4">

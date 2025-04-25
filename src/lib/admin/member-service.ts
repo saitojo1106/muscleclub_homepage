@@ -67,22 +67,25 @@ export async function loadSampleData(): Promise<Member[]> {
   const sampleMembers: Member[] = [
     {
       id: 1,
-      name: '山田 太郎',
+      name: '佐藤 太郎',
       position: '部長',
       year: '3年',
-      description: 'ボディビル3年目。全国大会出場経験あり。',
+      message: 'ボディビル3年目。全国大会出場経験あり。', // descriptionをmessageに変更
       image: '/assets/members/sample1.jpg'
     },
     {
       id: 2,
-      name: '佐藤 花子',
+      name: '鈴木 花子',
       position: '副部長',
       year: '2年',
-      description: 'フィジーク競技が専門。地方大会で準優勝。',
+      message: 'フィットネスビキニ志望。大会出場に向けて準備中。', // descriptionをmessageに変更
       image: '/assets/members/sample2.jpg'
-    }
+    },
+    // 他のサンプルメンバーも同様に修正
   ];
   
+  // ローカルストレージに保存
   localStorage.setItem(STORAGE_KEY, JSON.stringify(sampleMembers));
+  
   return sampleMembers;
 }

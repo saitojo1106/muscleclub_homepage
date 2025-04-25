@@ -63,14 +63,10 @@ export async function getEventById(id: number): Promise<Event | null> {
       .eq('id', id)
       .single();
     
-    if (error) {
-      console.error(`ID ${id} のイベント取得エラー:`, error);
-      return null;
-    }
-    
+    if (error) throw error;
     return data;
   } catch (error) {
-    console.error(`イベント取得中にエラーが発生しました:`, error);
+    console.error(`イベント取得エラー (ID: ${id}):`, error);
     return null;
   }
 }

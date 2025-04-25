@@ -1,6 +1,6 @@
 // src/lib/api/events.ts
 import { supabase } from '../supabase';
-import type { Event } from '@/types';
+import type { Event, Entity } from '@/types'; // Entityをインポートに追加
 
 // すべてのイベントを取得
 export async function getAllEvents(): Promise<Event[]> {

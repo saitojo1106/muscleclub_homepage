@@ -7,7 +7,7 @@ import { getEventById, getAllEvents } from '@/lib/events';
 export default async function EventPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const eventId = parseInt(resolvedParams.id);
-  const event = getEventById(eventId);
+  const event = await getEventById(eventId); // awaitを追加
   
   if (!event) {
     notFound();
@@ -90,7 +90,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const eventId = parseInt(resolvedParams.id);
-  const event = getEventById(eventId);
+  const event = await getEventById(eventId);
   
   if (!event) {
     return {

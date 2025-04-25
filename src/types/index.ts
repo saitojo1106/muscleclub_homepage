@@ -56,3 +56,12 @@ export type Post = {
   content: string;
   preview?: boolean;
 };
+
+export type Entity = {
+  id: number;
+  name: string;
+  description?: string;
+  created_at?: string;
+  updated_at?: string;
+  // 必要なプロパティを追加
+};
