@@ -43,3 +43,16 @@ next-env.d.ts
 *.bak
 .env.local
 .next/
+.next/
+# ビルドアーティファクト
+.next/
+
+# バックアップファイル
+*.bak
+
+# エディタ設定
+.vscode/
+.idea/
+
+# その他
+.DS_Store

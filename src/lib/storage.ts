@@ -54,19 +54,78 @@ export async function uploadImage(file: File, bucket: string = 'members', retryC
 export async function uploadResizedImage(file: File, options: ResizeOptions = {}): Promise<string | null> {
   const {
     bucket = 'members',
-    width,
+    width = 800,
     height,
     quality = 0.8,
     folder
   } = options;
   
-  // 現在の実装では実際のリサイズは行わず、そのままアップロード
-  // 実際のリサイズ機能は、canvas要素やsharp、resizeライブラリなどを使用して実装が必要
-  
-  // フォルダを指定した場合、パスに含める
-  const actualBucket = folder ? `${bucket}/${folder}` : bucket;
-  
-  return uploadImage(file, actualBucket);
+  // Canvas要素を使った画像リサイズ
+  try {
+    const resizedFile = await resizeImageFile(file, width, height, quality);
+    const actualBucket = folder ? `${bucket}/${folder}` : bucket;
+    return uploadImage(resizedFile, actualBucket);
+  } catch (error) {
+    console.error('画像リサイズエラー:', error);
+    return null;
+  }
+}
+
+// 画像リサイズ用のヘルパー関数
+async function resizeImageFile(file: File, maxWidth: number, maxHeight?: number, quality = 0.8): Promise<File> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      // 元のアスペクト比を維持
+      let width = img.width;
+      let height = img.height;
+      
+      if (width > maxWidth) {
+        height = Math.round((height * maxWidth) / width);
+        width = maxWidth;
+      }
+      
+      if (maxHeight && height > maxHeight) {
+        width = Math.round((width * maxHeight) / height);
+        height = maxHeight;
+      }
+      
+      // Canvas要素を作成
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      
+      // 画像を描画
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        reject(new Error('Canvas context could not be created'));
+        return;
+      }
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      // Blobに変換
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          reject(new Error('Canvas to Blob conversion failed'));
+          return;
+        }
+        
+        // 新しいFileオブジェクトを作成
+        const resizedFile = new File([blob], file.name, {
+          type: file.type,
+          lastModified: Date.now()
+        });
+        
+        resolve(resizedFile);
+      }, file.type, quality);
+    };
+    
+    img.onerror = () => {
+      reject(new Error('Image loading failed'));
+    };
+    
+    img.src = URL.createObjectURL(file);
+  });
 }
 
 // 画像を削除する関数
@@ -74,16 +133,25 @@ export async function deleteImage(url: string, bucket: string = 'members'): Prom
   try {
     // URLからファイルパスを抽出
     const urlObj = new URL(url);
-    const pathParts = urlObj.pathname.split('/');
-    const filePath = pathParts.slice(pathParts.indexOf(bucket) + 1).join('/');
+    const pathSegments = urlObj.pathname.split('/');
+    // URLパスから「storage/v1/object/public/」の部分を除去して正確なパスを取得
+    const relevantPathIndex = pathSegments.findIndex(segment => segment === 'public');
     
+    if (relevantPathIndex === -1) {
+      console.error('URLから正確なファイルパスを抽出できませんでした:', url);
+      return false;
+    }
+    
+    const filePath = pathSegments.slice(relevantPathIndex + 1).join('/');
+    
+    // ファイルを削除
     const { error } = await supabase
       .storage
       .from(bucket)
       .remove([filePath]);
       
     if (error) {
-      console.error('画像削除エラー:', error);
+      console.error('ファイル削除エラー:', error);
       return false;
     }
     

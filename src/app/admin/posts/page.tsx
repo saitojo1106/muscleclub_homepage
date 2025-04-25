@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Container from '@/app/_components/container';
 import Link from 'next/link';
 import { getAllMembers, addMember, updateMember, deleteMember, loadSampleData } from '@/lib/admin/member-service';
-import { isAuthenticated } from '@/lib/authUtils';
+import { isAuthenticated } from '@/lib/auth';
 
 export default function MembersAdminPage() {
   // const { data: session, status } = useSession();

@@ -8,7 +8,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Supabase環境変数が設定されていません。');
   if (typeof window !== 'undefined') {
     // クライアントサイドのみ
-    console.warn('Supabase設定エラー: .env.localファイルを確認してください');
+    alert('Supabase設定エラー: 管理者に連絡してください');
   }
 }
 

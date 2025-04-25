@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { logout } from '@/lib/authUtils';
+import { logout } from '@/lib/auth';
 
 export default function AdminHeader() {
   const router = useRouter();

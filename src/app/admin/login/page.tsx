@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { login, isAuthenticated } from "@/lib/authUtils";
+import { login, isAuthenticated } from "@/lib/auth";
 import Link from "next/link";
 
 export default function LoginPage() {
