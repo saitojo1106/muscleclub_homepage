@@ -4,7 +4,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "vercel-build": "npm install --legacy-peer-deps && next build"
+    "vercel-build": "npm install --legacy-peer-deps && node create-missing-files.js && next build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.3",
