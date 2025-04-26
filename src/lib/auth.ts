@@ -1,5 +1,4 @@
-// src/lib/auth.ts
-const AUTH_TOKEN_KEY = 'muscle_club_admin_token';
+const STORAGE_KEY = "muscle_club_admin_token";
 
 export type User = {
   username: string;
@@ -11,65 +10,54 @@ export type AuthState = {
   expires: number;
 };
 
-// ログイン関数
+// ログイン処理
 export async function login(username: string, password: string): Promise<boolean> {
-  // 開発用の簡易認証
-  if (username === 'admin' && password === 'muscleclub2024') {
-    const tokenData: AuthState = {
-      user: { username: 'admin', role: 'admin' },
-      expires: Date.now() + 24 * 60 * 60 * 1000 // 24時間有効
+  // 簡易認証 (本番環境では適切な認証方法に置き換える)
+  if (username === "admin" && password === "muscleclub2024") {
+    // トークンを作成（有効期限は24時間）
+    const token = {
+      user: {
+        username: "admin",
+        role: "admin"
+      },
+      expires: Date.now() + (24 * 60 * 60 * 1000) // 24時間
     };
     
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(AUTH_TOKEN_KEY, JSON.stringify(tokenData));
-    }
+    // ローカルストレージにトークンを保存
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(token));
     return true;
   }
-  
   return false;
 }
 
-// ログアウト関数
+// ログアウト処理
 export function logout(): void {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-  }
+  localStorage.removeItem(STORAGE_KEY);
 }
 
-// 認証状態確認関数
+// 認証状態の確認
 export function isAuthenticated(): boolean {
-  if (typeof window === 'undefined') {
-    return false; // サーバーサイドでは常にfalse
-  }
-  
   try {
-    const token = localStorage.getItem(AUTH_TOKEN_KEY);
-    if (!token) return false;
+    const tokenStr = localStorage.getItem(STORAGE_KEY);
+    if (!tokenStr) return false;
     
-    const data = JSON.parse(token) as AuthState;
-    return Date.now() < data.expires;
+    const token = JSON.parse(tokenStr);
+    return Date.now() < token.expires;
   } catch (error) {
     return false;
   }
 }
 
-// ユーザー情報取得関数
-export function getUser(): User | null {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-
+// ユーザー情報の取得
+export function getUser() {
   try {
-    const authData = localStorage.getItem(AUTH_TOKEN_KEY);
-    if (!authData) return null;
+    const tokenStr = localStorage.getItem(STORAGE_KEY);
+    if (!tokenStr) return null;
     
-    const { user, expires } = JSON.parse(authData) as AuthState;
-    if (Date.now() > expires) {
-      logout();
-      return null;
-    }
+    const token = JSON.parse(tokenStr);
+    if (Date.now() > token.expires) return null;
     
-    return user;
+    return token.user;
   } catch (error) {
     return null;
   }

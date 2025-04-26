@@ -1,15 +1,5 @@
 import { supabase } from '../supabase';
-
-export type Event = {
-  id: number;
-  title: string;
-  date: string;
-  location: string;
-  description?: string;
-  requirements?: string;
-  fee?: string;
-  image_url?: string;
-};
+import type { Event } from '@/types';
 
 // すべてのイベントを取得
 export async function getAllEvents(): Promise<Event[]> {
@@ -33,23 +23,19 @@ export async function getAllEvents(): Promise<Event[]> {
 
 // 将来のイベントを取得
 export async function getFutureEvents(): Promise<Event[]> {
+  const today = new Date().toISOString().split('T')[0];
+  
   try {
-    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD形式
-    
     const { data, error } = await supabase
       .from('events')
       .select('*')
       .gte('date', today)
       .order('date', { ascending: true });
     
-    if (error) {
-      console.error('イベント取得エラー:', error);
-      throw error;
-    }
-    
+    if (error) throw error;
     return data || [];
   } catch (error) {
-    console.error('イベント取得中にエラーが発生しました:', error);
+    console.error('将来のイベント取得エラー:', error);
     return [];
   }
 }
@@ -80,20 +66,16 @@ export async function addEvent(event: Omit<Event, 'id'>): Promise<Event | null> 
       .select()
       .single();
     
-    if (error) {
-      console.error('イベント追加エラー:', error);
-      return null;
-    }
-    
+    if (error) throw error;
     return data;
   } catch (error) {
-    console.error('イベント追加中にエラーが発生しました:', error);
+    console.error('イベント追加エラー:', error);
     return null;
   }
 }
 
 // イベントを更新
-export async function updateEvent(id: number, updates: Partial<Omit<Event, 'id'>>): Promise<Event | null> {
+export async function updateEvent(id: number, updates: Partial<Event>): Promise<Event | null> {
   try {
     const { data, error } = await supabase
       .from('events')
@@ -102,14 +84,10 @@ export async function updateEvent(id: number, updates: Partial<Omit<Event, 'id'>
       .select()
       .single();
     
-    if (error) {
-      console.error(`ID ${id} のイベント更新エラー:`, error);
-      return null;
-    }
-    
+    if (error) throw error;
     return data;
   } catch (error) {
-    console.error(`イベント更新中にエラーが発生しました:`, error);
+    console.error(`イベント更新エラー (ID: ${id}):`, error);
     return null;
   }
 }
@@ -122,14 +100,10 @@ export async function deleteEvent(id: number): Promise<boolean> {
       .delete()
       .eq('id', id);
     
-    if (error) {
-      console.error(`ID ${id} のイベント削除エラー:`, error);
-      return false;
-    }
-    
+    if (error) throw error;
     return true;
   } catch (error) {
-    console.error(`イベント削除中にエラーが発生しました:`, error);
+    console.error(`イベント削除エラー (ID: ${id}):`, error);
     return false;
   }
 }
