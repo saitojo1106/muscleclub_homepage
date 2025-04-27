@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../supabase';
 import type { Event } from '@/types';
 
 // すべてのイベントを取得
@@ -23,24 +23,29 @@ export async function getAllEvents(): Promise<Event[]> {
 
 // 将来のイベントを取得
 export async function getFutureEvents(): Promise<Event[]> {
-  const today = new Date().toISOString().split('T')[0];
-  
   try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
     const { data, error } = await supabase
       .from('events')
       .select('*')
-      .gte('date', today)
+      .gte('date', today.toISOString())
       .order('date', { ascending: true });
     
-    if (error) throw error;
+    if (error) {
+      console.error('将来イベント取得エラー:', error);
+      throw error;
+    }
+    
     return data || [];
   } catch (error) {
-    console.error('将来のイベント取得エラー:', error);
+    console.error('将来イベント取得中にエラーが発生しました:', error);
     return [];
   }
 }
 
-// IDでイベントを取得
+// イベントをIDで取得
 export async function getEventById(id: number): Promise<Event | null> {
   try {
     const { data, error } = await supabase
@@ -49,7 +54,11 @@ export async function getEventById(id: number): Promise<Event | null> {
       .eq('id', id)
       .single();
     
-    if (error) throw error;
+    if (error) {
+      console.error(`イベント取得エラー (ID: ${id}):`, error);
+      throw error;
+    }
+    
     return data;
   } catch (error) {
     console.error(`イベント取得エラー (ID: ${id}):`, error);

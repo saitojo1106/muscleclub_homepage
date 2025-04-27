@@ -1,15 +1,5 @@
 const STORAGE_KEY = "muscle_club_admin_token";
 
-export type User = {
-  username: string;
-  role: string;
-};
-
-export type AuthState = {
-  user: User | null;
-  expires: number;
-};
-
 // ログイン処理
 export async function login(username: string, password: string): Promise<boolean> {
   // 簡易認証 (本番環境では適切な認証方法に置き換える)
@@ -24,7 +14,9 @@ export async function login(username: string, password: string): Promise<boolean
     };
     
     // ローカルストレージにトークンを保存
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(token));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(token));
+    }
     return true;
   }
   return false;
@@ -32,11 +24,15 @@ export async function login(username: string, password: string): Promise<boolean
 
 // ログアウト処理
 export function logout(): void {
-  localStorage.removeItem(STORAGE_KEY);
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(STORAGE_KEY);
+  }
 }
 
 // 認証状態の確認
 export function isAuthenticated(): boolean {
+  if (typeof window === 'undefined') return false;
+  
   try {
     const tokenStr = localStorage.getItem(STORAGE_KEY);
     if (!tokenStr) return false;
@@ -50,6 +46,8 @@ export function isAuthenticated(): boolean {
 
 // ユーザー情報の取得
 export function getUser() {
+  if (typeof window === 'undefined') return null;
+  
   try {
     const tokenStr = localStorage.getItem(STORAGE_KEY);
     if (!tokenStr) return null;
