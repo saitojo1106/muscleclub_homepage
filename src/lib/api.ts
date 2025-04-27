@@ -56,8 +56,8 @@ export function getPostBySlug(slug: string, fields: string[] = []): Partial<Post
       if (field === 'content') {
         items[field as keyof Post] = content as any;
       }
-      if (field === 'date' && data[field]) {
-        items[field as keyof Post] = data[field].toISOString() as any;
+      if (field === 'date' && data[field]) {  try {
+        items[field as keyof Post] = (data[field] instanceof Date ? data[field].toISOString() : data[field]) as any;  } catch (e) { items[field as keyof Post] = data[field] as any; }
       }
       if (data[field]) {
         items[field as keyof Post] = data[field] as any;
