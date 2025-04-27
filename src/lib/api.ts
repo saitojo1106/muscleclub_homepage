@@ -115,9 +115,9 @@ export function getAllPosts(fields: string[] = []): Partial<Post>[] {
     ];
     
     const posts = slugs
-      .map((slug) => getPostBySlug(slug, allFields))
+      .map((slug: string) => getPostBySlug(slug, allFields)) // 明示的にstring型を指定
       // dateで降順ソート
-      .sort((post1, post2) => ((post1.date || '') > (post2.date || '') ? -1 : 1));
+      .sort((post1: Partial<Post>, post2: Partial<Post>) => ((post1.date || '') > (post2.date || '') ? -1 : 1));
     
     return posts;
   } catch (error) {

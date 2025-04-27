@@ -28,29 +28,29 @@ export default function BlogPage() {
               <div className="border dark:border-slate-700 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
                 <div className="relative h-72 md:h-96">
                   <BlogImage
-                    src={latestPost.coverImage}
-                    alt={`Cover Image for ${latestPost.title}`}
+                    src={latestPost.coverImage || "/assets/blog/default-cover.jpg"}
+                    alt={`Cover Image for ${latestPost.title || 'ブログ記事'}`}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 90vw"
                     priority
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
-                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{latestPost.title}</h3>
-                    <p className="text-white/90 mb-4 line-clamp-2">{latestPost.excerpt}</p>
+                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{latestPost.title || 'タイトルなし'}</h3>
+                    <p className="text-white/90 mb-4 line-clamp-2">{latestPost.excerpt || '内容なし'}</p>
                     <div className="flex items-center">
                       <div className="relative w-10 h-10 mr-3">
                         <BlogImage
-                          src={latestPost.author.picture}
-                          alt={latestPost.author.name}
+                          src={latestPost.author?.picture || '/assets/blog/authors/default.jpg'}
+                          alt={latestPost.author?.name || '著者'}
                           fill
                           className="rounded-full object-cover"
                         />
                       </div>
                       <div>
-                        <p className="text-white font-semibold">{latestPost.author.name}</p>
+                        <p className="text-white font-semibold">{latestPost.author?.name || '著者'}</p>
                         <p className="text-white/80 text-sm">
-                          <DateFormatter dateString={latestPost.date} />
+                          <DateFormatter dateString={latestPost.date || new Date().toISOString()} />
                         </p>
                       </div>
                     </div>
@@ -58,6 +58,12 @@ export default function BlogPage() {
                 </div>
               </div>
             </Link>
+            {/* 記事タイトル */}
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">{latestPost.title || 'タイトルなし'}</h1>
+            {/* 記事抜粋 */}
+            <p className="text-lg text-gray-600 dark:text-gray-400">{latestPost.excerpt || '内容なし'}</p>
+            {/* 日付 */}
+            <p className="text-gray-500">{latestPost.date ? new Date(latestPost.date).toLocaleDateString('ja-JP') : '日付なし'}</p>
           </section>
         )}
         
@@ -70,28 +76,28 @@ export default function BlogPage() {
                 <div className="border dark:border-slate-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
                   <div className="relative h-48">
                     <BlogImage
-                      src={post.coverImage}
-                      alt={`Cover Image for ${post.title}`}
+                      src={post.coverImage || "/assets/blog/default-cover.jpg"}
+                      alt={`Cover Image for ${post.title || 'ブログ記事'}`}
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   </div>
                   <div className="p-4 flex-grow flex flex-col">
-                    <h3 className="text-xl font-bold mb-2 hover:text-blue-500 transition-colors">{post.title}</h3>
+                    <h3 className="text-xl font-bold mb-2 hover:text-blue-500 transition-colors">{post.title || 'タイトルなし'}</h3>
                     <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">
-                      <DateFormatter dateString={post.date} />
+                      <DateFormatter dateString={post.date || new Date().toISOString()} />
                     </p>
-                    <p className="text-gray-600 dark:text-gray-300 mb-4 flex-grow line-clamp-3">{post.excerpt}</p>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4 flex-grow line-clamp-3">{post.excerpt || '内容なし'}</p>
                     <div className="flex items-center mt-2">
                       <BlogImage
-                        src={post.author.picture}
-                        alt={post.author.name}
+                        src={post.author?.picture || '/assets/blog/authors/default.jpg'}
+                        alt={post.author?.name || '著者'}
                         width={40}
                         height={40}
                         className="rounded-full mr-2"
                       />
-                      <span className="text-sm text-gray-500 dark:text-gray-400">{post.author.name}</span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">{post.author?.name || '著者'}</span>
                     </div>
                   </div>
                 </div>

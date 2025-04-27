@@ -10,7 +10,8 @@ import { PostHeader } from "@/app/_components/post-header";
 import Link from "next/link";
 import Image from "next/image";
 import DateFormatter from "@/app/_components/date-formatter";
-import BlogImage from "@/app/_components/blog-image"; // クライアントコンポーネント
+import BlogImage from "@/app/_components/blog-image";
+import type { Post } from "@/types"; // 'type'キーワードを追加
 
 // SNSシェアアイコンコンポーネント
 const TwitterIcon = () => (
@@ -130,7 +131,7 @@ export default async function Post(props: Params) {
                     <div className="p-4">
                       <h4 className="text-lg font-semibold group-hover:text-blue-500 transition-colors">{relatedPost.title}</h4>
                       <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-                        <DateFormatter dateString={relatedPost.date} />
+                        <DateFormatter dateString={relatedPost.date || new Date().toISOString()} />
                       </p>
                     </div>
                   </div>
@@ -162,7 +163,19 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
     return notFound();
   }
 
-  const title = `${post.title} | マッスルクラブ`;
+  const title = `${post.title || 'タイトルなし'} | マッスルクラブ`;
+  // デフォルト画像パス
+  const defaultImagePath = '/assets/blog/default-cover.jpg';
+  
+  // 安全に ogImage にアクセス
+  let ogImageUrl = defaultImagePath;
+  
+  // 型アサーションを使用して、TypeScriptに「post」には「ogImage」が存在する可能性があることを伝える
+  const postWithOgImage = post as Partial<Post> & { ogImage?: { url?: string } };
+  
+  if (postWithOgImage.ogImage && typeof postWithOgImage.ogImage === 'object' && 'url' in postWithOgImage.ogImage) {
+    ogImageUrl = postWithOgImage.ogImage.url || defaultImagePath;
+  }
 
   return {
     title,
@@ -170,7 +183,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
     openGraph: {
       title,
       description: post.excerpt,
-      images: [post.ogImage.url],
+      images: [ogImageUrl],
       type: 'article',
       publishedTime: post.date,
     },

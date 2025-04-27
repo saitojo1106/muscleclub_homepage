@@ -43,7 +43,7 @@ export type CompetitionResult = {
   rank: string;
 };
 
-export type Post = {
+export interface Post {
   slug: string;
   title: string;
   date: string;
@@ -54,8 +54,11 @@ export type Post = {
   };
   excerpt: string;
   content: string;
+  ogImage: {
+    url: string;
+  };
   preview?: boolean;
-};
+}
 
 export type Entity = {
   id: number;
