@@ -1,7 +1,7 @@
 import Container from '@/app/_components/container';
 import Header from '@/app/_components/header';
 import EventCalendar from '@/app/_components/calendar';
-import { getAllEvents, getFutureEvents } from '@/lib/events';
+import { getAllEvents, getFutureEvents } from '@/lib/api/events';
 
 export const metadata = {
   title: 'イベントカレンダー | マッスルクラブ',

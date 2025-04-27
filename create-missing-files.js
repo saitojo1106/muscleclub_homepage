@@ -344,6 +344,170 @@ export async function deleteEvent(id: number): Promise<boolean> {
   }
 }
 `
+  },
+  // create-missing-files.jsに追加するコード
+  {
+    path: 'src/types/index.ts',
+    content: `// ブログ記事の型定義
+export interface Post {
+  slug: string;
+  title: string;
+  date: string;
+  coverImage: string;
+  author: {
+    name: string;
+    picture: string;
+  };
+  excerpt: string;
+  content: string;
+  ogImage: {
+    url: string;
+  };
+}
+
+// イベントの型定義
+export interface Event {
+  id: number;
+  title: string;
+  date: string;
+  location: string;
+  description: string;
+  requirements?: string;
+  fee?: string;
+  image_url?: string;
+}
+
+// 部員の型定義
+export interface Member {
+  id: number;
+  name: string;
+  role: string;
+  bio: string;
+  image_url?: string;
+  joined_year: number;
+}
+`
+  },
+  {
+    path: 'src/lib/api.ts',
+    content: `import fs from 'fs';
+import { join } from 'path';
+import matter from 'gray-matter';
+import { Post } from '@/types';
+
+const postsDirectory = join(process.cwd(), '_posts');
+
+export function getPostSlugs() {
+  try {
+    return fs.readdirSync(postsDirectory);
+  } catch (error) {
+    console.error('投稿スラグ取得エラー:', error);
+    return [];
+  }
+}
+
+export function getPostBySlug(slug: string, fields: string[] = []) {
+  try {
+    const realSlug = slug.replace(/\\.md$/, '');
+    const fullPath = join(postsDirectory, \`\${realSlug}.md\`);
+    
+    // ファイルシステムにアクセスできない場合はクライアント側で実行中
+    if (typeof window !== 'undefined') {
+      return {
+        slug: realSlug,
+        title: '読み込み中...',
+        date: new Date().toISOString(),
+        content: '',
+        excerpt: '',
+        coverImage: '',
+        author: { name: '', picture: '' },
+        ogImage: { url: '' }
+      };
+    }
+    
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    const { data, content } = matter(fileContents);
+
+    const items: Record<string, any> = {};
+
+    // 必要なフィールドだけを返す
+    fields.forEach((field) => {
+      if (field === 'slug') {
+        items[field] = realSlug;
+      }
+      if (field === 'content') {
+        items[field] = content;
+      }
+      if (field === 'date' && data[field]) {
+        items[field] = data[field].toISOString();
+      }
+      if (data[field]) {
+        items[field] = data[field];
+      }
+    });
+
+    return items;
+  } catch (error) {
+    console.error(\`スラグ \${slug} の記事取得エラー:\`, error);
+    return {
+      slug: slug.replace(/\\.md$/, ''),
+      title: 'エラーが発生しました',
+      date: new Date().toISOString(),
+      content: '',
+      excerpt: '',
+      coverImage: '',
+      author: { name: '', picture: '' },
+      ogImage: { url: '' }
+    };
+  }
+}
+
+export function getAllPosts(fields: string[] = []) {
+  try {
+    if (typeof window !== 'undefined') {
+      // クライアントサイド実行時はダミーデータを返す
+      return [
+        {
+          slug: 'hello-world',
+          title: 'サンプル記事',
+          date: '2023-01-01T00:00:00.000Z',
+          coverImage: '/assets/sample.jpg',
+          author: {
+            name: '管理者',
+            picture: '/assets/author.jpg',
+          },
+          excerpt: 'サンプル記事の内容です。',
+          content: '# サンプル記事\\n\\nこれはサンプル記事の内容です。',
+          ogImage: {
+            url: '/assets/sample.jpg',
+          },
+        }
+      ];
+    }
+    
+    const slugs = getPostSlugs();
+    const allFields = [
+      'title',
+      'date',
+      'slug',
+      'author',
+      'coverImage',
+      'excerpt',
+      ...fields
+    ];
+    
+    const posts = slugs
+      .map((slug) => getPostBySlug(slug, allFields))
+      // dateで降順ソート
+      .sort((post1, post2) => (post1.date > post2.date ? -1 : 1));
+    
+    return posts;
+  } catch (error) {
+    console.error('全記事取得エラー:', error);
+    return [];
+  }
+}
+`
   }
 ];
 

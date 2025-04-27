@@ -86,23 +86,23 @@ export default function Index() {
           <section className="mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-8">最新の投稿</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {recentPosts.map((post) => (
-                <Link key={post.slug} href={`/posts/${post.slug}`} className="group">
+              {recentPosts.map((post, index) => (
+                <Link key={post.slug || `post-${index}`} href={`/posts/${post.slug || 'unknown'}`} className="group">
                   <div className="border dark:border-slate-700 rounded-lg overflow-hidden hover:shadow-md transition-shadow h-full flex flex-col">
                     <div className="relative h-48">
                       <Image
-                        src={post.coverImage}
-                        alt={`Cover Image for ${post.title}`}
+                        src={post.coverImage || "/assets/blog/default-cover.jpg"} // デフォルト画像を指定
+                        alt={`Cover Image for ${post.title || 'ブログ記事'}`} // タイトルもundefinedの可能性に対応
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
                     <div className="p-4 flex-grow">
-                      <h3 className="text-xl font-bold mb-2 group-hover:text-blue-500 transition-colors">{post.title}</h3>
-                      <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{post.excerpt.substring(0, 100)}...</p>
+                      <h3 className="text-xl font-bold mb-2 group-hover:text-blue-500 transition-colors">{post.title || 'タイトルなし'}</h3>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{post.excerpt?.substring(0, 100) || '内容なし'}...</p>
                       <div className="flex items-center justify-between mt-auto">
                         <p className="text-sm text-gray-500 dark:text-gray-500">
-                          {new Date(post.date).toLocaleDateString('ja-JP')}
+                          {post.date ? new Date(post.date).toLocaleDateString('ja-JP') : '日付なし'}
                         </p>
                         <span className="text-blue-500 text-sm font-medium flex items-center">
                           続きを読む

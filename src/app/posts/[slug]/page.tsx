@@ -58,10 +58,10 @@ export default async function Post(props: Params) {
         <Header />
         <article className="mb-32">
           <PostHeader
-            title={post.title}
-            coverImage={post.coverImage}
-            date={post.date}
-            author={post.author}
+            title={post.title || 'タイトルなし'} // デフォルト値を追加
+            coverImage={post.coverImage || "/assets/blog/default-cover.jpg"}
+            date={post.date || new Date().toISOString()}
+            author={post.author || { name: '不明な著者', picture: '/assets/blog/authors/default.jpg' }}
           />
 
           {/* タグ */}
@@ -85,7 +85,7 @@ export default async function Post(props: Params) {
             <h3 className="text-lg font-semibold mb-4">この記事をシェアする</h3>
             <div className="flex space-x-4">
               <a 
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(url)}`} 
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title || 'マッスルクラブの記事')}&url=${encodeURIComponent(url || '')}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-[#1DA1F2] text-white rounded-full hover:opacity-90 transition-opacity"
@@ -93,7 +93,7 @@ export default async function Post(props: Params) {
                 <TwitterIcon />
               </a>
               <a 
-                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`} 
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url || '')}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-[#4267B2] text-white rounded-full hover:opacity-90 transition-opacity"
@@ -101,7 +101,7 @@ export default async function Post(props: Params) {
                 <FacebookIcon />
               </a>
               <a 
-                href={`https://line.me/R/msg/text/?${encodeURIComponent(post.title + ' ' + url)}`} 
+                href={`https://line.me/R/msg/text/?${encodeURIComponent((post.title || 'マッスルクラブの記事') + ' ' + (url || ''))}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-[#06C755] text-white rounded-full hover:opacity-90 transition-opacity"
@@ -120,8 +120,8 @@ export default async function Post(props: Params) {
                   <div className="border dark:border-slate-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                     <div className="relative h-40">
                       <Image
-                        src={relatedPost.coverImage}
-                        alt={relatedPost.title}
+                        src={relatedPost.coverImage || "/assets/blog/default-cover.jpg"}
+                        alt={relatedPost.title || "ブログ記事"}
                         fill
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, 50vw"

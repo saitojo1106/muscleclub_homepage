@@ -133,3 +133,6 @@ export async function deleteEvent(id: number): Promise<boolean> {
     return false;
   }
 }
+
+// src/lib/events.ts
+export * from '@/lib/api/events';
