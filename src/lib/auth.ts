@@ -1,3 +1,5 @@
+"use client";
+
 const STORAGE_KEY = "muscle_club_admin_token";
 
 // ログイン処理

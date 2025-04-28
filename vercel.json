@@ -1,0 +1,11 @@
+{
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next",
+      "config": {
+        "installCommand": "npm install --no-save --no-package-lock typescript@latest @types/react @types/react-dom && npm install"
+      }
+    }
+  ]
+}
