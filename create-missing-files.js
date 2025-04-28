@@ -514,7 +514,11 @@ export function getAllPosts(fields: string[] = []) {
 // ファイルを書き込む
 files.forEach(file => {
   const filePath = path.join(process.cwd(), file.path);
+  console.log(`Attempting to create file at: ${filePath}`);
   ensureDirectoryExistence(filePath);
+  
+  // パスが正しいことを確認するためのデバッグ出力
+  console.log(`Directory exists: ${fs.existsSync(path.dirname(filePath))}`);
   
   // ファイルが存在しない場合のみ作成
   if (!fs.existsSync(filePath)) {
