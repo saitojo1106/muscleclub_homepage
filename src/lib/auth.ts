@@ -4,24 +4,35 @@ const STORAGE_KEY = "muscle_club_admin_token";
 
 // ログイン処理
 export async function login(username: string, password: string): Promise<boolean> {
-  // 簡易認証 (本番環境では適切な認証方法に置き換える)
-  if (username === "admin" && password === "muscleclub2024") {
+  // サーバーサイドで検証する
+  try {
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const data = await response.json();
+    
     // トークンを作成（有効期限は24時間）
     const token = {
-      user: {
-        username: "admin",
-        role: "admin"
-      },
+      user: data.user,
       expires: Date.now() + (24 * 60 * 60 * 1000) // 24時間
     };
     
     // ローカルストレージにトークンを保存
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(token));
-    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(token));
     return true;
+  } catch (error) {
+    console.error('ログインエラー:', error);
+    return false;
   }
-  return false;
 }
 
 // ログアウト処理
