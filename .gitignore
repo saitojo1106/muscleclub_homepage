@@ -38,14 +38,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-.env.local
-.next/
-*.bak
-.env.local
-.next/
-.next/
-# ビルドアーティファクト
-.next/
 
 # バックアップファイル
 *.bak
@@ -53,6 +45,3 @@ next-env.d.ts
 # エディタ設定
 .vscode/
 .idea/
-
-# その他
-.DS_Store
