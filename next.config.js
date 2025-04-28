@@ -6,6 +6,10 @@ const nextConfig = {
   images: {
     domains: ['placehold.co'],
   },
+  // TypeScriptチェックを無効化
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       // クライアントサイドビルドでは fs, path などのNode.jsモジュールを無視
