@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import styles from './theme-switcher.module.css';
 
 // カラースキーム設定のキー
 const STORAGE_KEY = "theme";
@@ -8,8 +9,12 @@ type ColorScheme = "dark" | "light";
 
 export function ThemeSwitcher() {
   const [isDark, setIsDark] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
+  // マウント時の初期化
   useEffect(() => {
+    setIsMounted(true);
+    
     // クライアントサイドでのみ実行
     const savedTheme = localStorage.getItem(STORAGE_KEY);
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -35,6 +40,7 @@ export function ThemeSwitcher() {
 
   function updateDOM(dark: boolean) {
     document.documentElement.classList.toggle("dark", dark);
+    document.documentElement.setAttribute('data-mode', dark ? 'dark' : 'light');
   }
 
   function toggleTheme() {
@@ -44,13 +50,16 @@ export function ThemeSwitcher() {
     localStorage.setItem(STORAGE_KEY, newIsDark ? "dark" : "light");
   }
 
+  // SSRでのレンダリング時は何も表示しない
+  if (!isMounted) return null;
+
   return (
     <button
       onClick={toggleTheme}
-      className="fixed top-4 right-4 z-50 p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+      className={styles.switch}
       aria-label="テーマを切り替える"
     >
-      {isDark ? "🌙" : "☀️"}
+      {/* アイコンはCSSで制御 */}
     </button>
   );
 }
