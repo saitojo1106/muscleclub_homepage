@@ -27,7 +27,7 @@ export default function RootLayout({
       <head>
         <ThemeScript />
       </head>
-      <body className={`${inter.className} bg-white dark:bg-slate-900 text-black dark:text-white`}>
+      <body className={`${inter.className} bg-white dark:bg-slate-900 text-black dark:text-white min-h-screen`}>
         <Providers>
           {children}
           <Footer />

@@ -80,13 +80,14 @@ export function ThemeScript() {
         __html: `
           (function() {
             try {
-              var key = "${STORAGE_KEY}";
+              var key = "theme";
               var savedTheme = localStorage.getItem(key);
               var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
               
               var isDark = savedTheme === "dark" || (savedTheme !== "light" && prefersDark);
               document.documentElement.classList.toggle("dark", isDark);
-              document.documentElement.setAttribute('data-mode', isDark ? 'dark' : 'light');
+              // data-modeの設定を削除
+              // document.documentElement.setAttribute('data-mode', isDark ? 'dark' : 'light');
             } catch (e) {
               console.error("テーマの適用中にエラーが発生しました:", e);
             }
