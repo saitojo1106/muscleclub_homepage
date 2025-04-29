@@ -4,20 +4,24 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AdminHeader from "../_components/admin-header";
-import { isAuthenticated } from "@/lib/auth"; // 修正: authUtils を auth に変更
+import { useAuth } from "@/context/auth-context";
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { user, loading: authLoading, initialized } = useAuth();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Wait for auth to be initialized
+    if (!initialized) return;
+    
     // クライアントサイドでの認証チェック
-    if (!isAuthenticated()) {
+    if (!authLoading && (!user || user.user_metadata?.role !== 'admin')) {
       router.push('/admin/login');
-    } else {
+    } else if (!authLoading) {
       setLoading(false);
     }
-  }, [router]);
+  }, [user, authLoading, initialized, router]);
 
   if (loading) {
     return <div className="flex justify-center items-center min-h-screen">読み込み中...</div>;

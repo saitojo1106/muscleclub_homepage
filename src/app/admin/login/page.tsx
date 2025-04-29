@@ -2,28 +2,37 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { login, isAuthenticated } from "@/lib/auth";
+import { useAuth } from "@/context/auth-context";
 import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState('');
+  const { user, loading: authLoading, signInWithPassword, error: authError } = useAuth();
+  
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
   useEffect(() => {
     // 既に認証されている場合はダッシュボードにリダイレクト
-    if (isAuthenticated()) {
+    if (user && user.user_metadata?.role === 'admin') {
       router.push('/admin/dashboard');
     }
-  }, [router]);
+  }, [user, router]);
+
+  // Handle auth errors from context
+  useEffect(() => {
+    if (authError) {
+      setError(authError.message || '認証エラーが発生しました');
+    }
+  }, [authError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!username || !password) {
-      setError("ユーザー名とパスワードを入力してください");
+    if (!email || !password) {
+      setError("メールアドレスとパスワードを入力してください");
       return;
     }
     
@@ -31,13 +40,17 @@ export default function LoginPage() {
     setError("");
     
     try {
-      // await を使って login の結果を待機
-      const success = await login(username, password);
+      const result = await signInWithPassword({ email, password });
       
-      if (success) {
-        router.push('/admin/dashboard');
+      if (result.success) {
+        // Check if user has admin role
+        if (result.data?.user?.user_metadata?.role === 'admin') {
+          router.push('/admin/dashboard');
+        } else {
+          setError("管理者権限がありません");
+        }
       } else {
-        setError("ユーザー名またはパスワードが間違っています");
+        setError("ログインに失敗しました: " + (result.error?.message || '不明なエラー'));
       }
     } catch (err) {
       console.error("ログイン中にエラーが発生しました:", err);
@@ -54,6 +67,9 @@ export default function LoginPage() {
           <h2 className="text-center text-3xl font-extrabold text-gray-900 dark:text-white">
             管理者ログイン
           </h2>
+          <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+            Supabase認証を使用しています
+          </p>
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -64,14 +80,14 @@ export default function LoginPage() {
           )}
           
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              ユーザー名
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              メールアドレス
             </label>
             <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
