@@ -1,13 +1,18 @@
 // src/app/api/auth/login/route.ts
-import { NextResponse } from 'next/server';
+/ 変更後
+   const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
+   const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'muscleclub2024';
+   export async function POST(request: Request) {
+     try {
+       const { username, password } = await request.json();
 
-export async function POST(request: Request) {
-  try {
-    const { username, password } = await request.json();
-
+       if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
+         return NextResponse.json(
+           { success: false, message: '管理者認証情報が設定されていません' },
+           { status: 500 }
+         );
+       }
     if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
       return NextResponse.json({ 
         success: true, 

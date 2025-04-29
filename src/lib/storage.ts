@@ -1,4 +1,269 @@
 import { supabase } from './supabase';
+import { v4 as uuidv4 } from 'uuid';
+
+// Bucket names
+export const BUCKETS = {
+  EVENTS: 'events',
+  MEMBERS: 'members',
+  GENERAL: 'general',
+} as const;
+
+export type BucketName = typeof BUCKETS[keyof typeof BUCKETS];
+
+// File types we accept
+export const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+] as const;
+
+export type AcceptedImageType = typeof ACCEPTED_IMAGE_TYPES[number];
+
+// Size options for image optimization
+export const IMAGE_SIZES = {
+  THUMBNAIL: { width: 200, height: 200 },
+  MEDIUM: { width: 800, height: 600 },
+  LARGE: { width: 1920, height: 1080 },
+} as const;
+
+export type ImageSize = typeof IMAGE_SIZES[keyof typeof IMAGE_SIZES];
+
+export type ImageResizeOptions = {
+  width?: number;
+  height?: number;
+  quality?: number; // 1-100
+  format?: 'jpeg' | 'webp' | 'png';
+};
+
+export type UploadOptions = {
+  /**
+   * The bucket to upload to
+   */
+  bucket: BucketName;
+
+  /**
+   * Custom path within the bucket (optional)
+   * Default: Root of the bucket
+   */
+  path?: string;
+
+  /**
+   * Whether to make the file publicly accessible
+   * Default: true
+   */
+  isPublic?: boolean;
+
+  /**
+   * Image resize options (optional)
+   */
+  resize?: ImageResizeOptions;
+};
+
+export type UploadResult = {
+  /**
+   * Whether the upload was successful
+   */
+  success: boolean;
+
+  /**
+   * The path to the file in the bucket
+   */
+  path?: string;
+
+  /**
+   * The public URL of the file (if isPublic is true)
+   */
+  publicUrl?: string;
+
+  /**
+   * Error message if upload failed
+   */
+  error?: string;
+};
+
+/**
+ * Generate a unique file path for upload
+ * @param fileName Original file name
+ * @param path Optional custom path
+ * @returns Unique file path
+ */
+export function generateFilePath(fileName: string, path?: string): string {
+  const fileExtension = fileName.split('.').pop();
+  const uniqueId = uuidv4();
+  const basePath = path ? `${path}/` : '';
+  
+  // Replace spaces and special characters in the original filename
+  const cleanFileName = fileName
+    .split('.')
+    .slice(0, -1)
+    .join('.')
+    .replace(/[^a-zA-Z0-9]/g, '_')
+    .toLowerCase();
+  
+  return `${basePath}${cleanFileName}_${uniqueId}.${fileExtension}`;
+}
+
+/**
+ * Upload a file to Supabase Storage
+ * @param file File to upload
+ * @param options Upload options
+ * @returns Upload result
+ */
+export async function uploadFile(
+  file: File,
+  options: UploadOptions
+): Promise<UploadResult> {
+  try {
+    // Check if file type is allowed (if it's an image)
+    if (
+      file.type.startsWith('image/') && 
+      !ACCEPTED_IMAGE_TYPES.includes(file.type as AcceptedImageType)
+    ) {
+      return {
+        success: false,
+        error: `不正なファイル形式です。次の形式のみ許可されています: ${ACCEPTED_IMAGE_TYPES.join(', ')}`,
+      };
+    }
+
+    // Generate unique path to prevent overwriting existing files
+    const filePath = generateFilePath(file.name, options.path);
+
+    // Upload the file
+    const { error: uploadError } = await supabase.storage
+      .from(options.bucket)
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
+
+    if (uploadError) {
+      console.error('ファイルアップロードエラー:', uploadError);
+      return {
+        success: false,
+        error: `アップロードに失敗しました: ${uploadError.message}`,
+      };
+    }
+
+    // Set public access if requested
+    if (options.isPublic !== false) {
+      // File is already public by default with current Supabase settings
+      // This is just a placeholder in case we need to change permissions later
+    }
+
+    // Get the public URL
+    const { data: publicUrlData } = supabase.storage
+      .from(options.bucket)
+      .getPublicUrl(filePath);
+
+    return {
+      success: true,
+      path: filePath,
+      publicUrl: publicUrlData.publicUrl,
+    };
+  } catch (error) {
+    console.error('ファイルアップロード中に例外が発生しました:', error);
+    return {
+      success: false,
+      error: '予期しないエラーが発生しました',
+    };
+  }
+}
+
+/**
+ * Get a public URL for a file in Supabase Storage
+ * @param bucket Bucket name
+ * @param path File path in the bucket
+ * @returns Public URL or null if error
+ */
+export function getPublicUrl(bucket: BucketName, path: string): string | null {
+  try {
+    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+    return data.publicUrl;
+  } catch (error) {
+    console.error('公開URL取得エラー:', error);
+    return null;
+  }
+}
+
+/**
+ * Delete a file from Supabase Storage
+ * @param bucket Bucket name
+ * @param path File path in the bucket
+ * @returns Whether deletion was successful
+ */
+export async function deleteFile(
+  bucket: BucketName, 
+  path: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { error } = await supabase.storage.from(bucket).remove([path]);
+    
+    if (error) {
+      console.error('ファイル削除エラー:', error);
+      return { success: false, error: error.message };
+    }
+    
+    return { success: true };
+  } catch (error) {
+    console.error('ファイル削除中に例外が発生しました:', error);
+    return { success: false, error: '予期しないエラーが発生しました' };
+  }
+}
+
+/**
+ * Create a signed URL for temporary access to a file
+ * @param bucket Bucket name
+ * @param path File path in the bucket
+ * @param expiresIn Expiration time in seconds (default: 60)
+ * @returns Signed URL or null if error
+ */
+export async function createSignedUrl(
+  bucket: BucketName,
+  path: string,
+  expiresIn = 60
+): Promise<string | null> {
+  try {
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .createSignedUrl(path, expiresIn);
+    
+    if (error) {
+      console.error('署名付きURL作成エラー:', error);
+      return null;
+    }
+    
+    return data.signedUrl;
+  } catch (error) {
+    console.error('署名付きURL作成中に例外が発生しました:', error);
+    return null;
+  }
+}
+
+/**
+ * Initialize storage buckets (useful for application startup)
+ * Creates the buckets if they don't exist
+ */
+export async function initializeStorageBuckets(): Promise<void> {
+  try {
+    const { data: buckets } = await supabase.storage.listBuckets();
+    
+    // Create buckets if they don't exist
+    for (const bucketName of Object.values(BUCKETS)) {
+      if (!buckets?.find(b => b.name === bucketName)) {
+        await supabase.storage.createBucket(bucketName, {
+          public: true,
+        });
+        console.log(`バケット作成: ${bucketName}`);
+      }
+    }
+  } catch (error) {
+    console.error('ストレージバケット初期化エラー:', error);
+  }
+}
+
+import { supabase } from './supabase';
 import { v4 as uuidv4 } from 'uuid'; // UUIDパッケージをインストール: npm install uuid @types/uuid
 
 type ResizeOptions = {
