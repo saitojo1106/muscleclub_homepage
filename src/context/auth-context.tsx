@@ -64,49 +64,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [initialized, setInitialized] = useState<boolean>(false);
   const [error, setError] = useState<AuthError | null>(null);
-  
+  const [isAdmin, setIsAdmin] = useState(false);
+
   // Check if the user is an admin based on user metadata
-  const isAdmin = user?.user_metadata?.role === 'admin';
-
-  // Initialize auth state
   useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        setLoading(true);
-        // Get the initial session
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          setError(error);
-        } else if (session) {
-          setSession(session);
-          setUser(session.user);
-        }
-      } catch (error) {
-        console.error('Auth initialization error:', error);
-        setError(error as AuthError);
-      } finally {
-        setLoading(false);
-        setInitialized(true);
-      }
-    };
+    // 初期セッション取得
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setIsAdmin(session?.user?.user_metadata?.role === 'admin' ?? false);
+      setLoading(false);
+    });
 
-    initializeAuth();
+    // 認証状態の変更を監視
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setIsAdmin(session?.user?.user_metadata?.role === 'admin' ?? false);
+      setLoading(false);
+    });
 
-    // Set up the auth state change listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log('Auth state changed:', event);
-        setSession(session);
-        setUser(session?.user ?? null);
-        setError(null);
-      }
-    );
-
-    // Clean up subscription on unmount
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   // Auth methods

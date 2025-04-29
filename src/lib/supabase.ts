@@ -2,28 +2,28 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Database } from '../types/supabase';
 
-// Determine if we're running on the client side
+// クライアントサイド判定
 const isClient = typeof window !== 'undefined';
 
-// Define types for our Supabase client
+// Supabaseクライアント型
 type TypedSupabaseClient = SupabaseClient<Database>;
 
-// Class to handle Supabase client with singleton pattern
+// Supabaseクライアントのシングルトンパターン
 class SupabaseService {
   private static instance: TypedSupabaseClient | null = null;
   
-  // Private constructor to prevent direct instantiation
+  // 直接のインスタンス化を防ぐプライベートコンストラクタ
   private constructor() {}
   
-  // Get the Supabase client instance (singleton pattern)
+  // Supabaseクライアントインスタンスを取得（シングルトンパターン）
   static getInstance(): TypedSupabaseClient {
     if (!this.instance) {
-      // Check environment to use the appropriate client initialization
+      // 環境に応じて適切なクライアント初期化を使用
       if (isClient) {
-        // Client-side: use createClientComponentClient for automatic token refresh and storage handling
+        // クライアントサイド: createClientComponentClientを使用して自動トークン更新とストレージ処理
         this.instance = createClientComponentClient<Database>();
       } else {
-        // Server-side: use the standard createClient with env variables
+        // サーバーサイド: 環境変数を使用した標準のcreateClient
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
         const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
         this.instance = createClient<Database>(supabaseUrl, supabaseAnonKey);
@@ -32,14 +32,14 @@ class SupabaseService {
     return this.instance;
   }
   
-  // Reset the instance (useful for testing)
+  // インスタンスをリセット（テスト用）
   static resetInstance(): void {
     this.instance = null;
   }
 }
 
-// Export the Supabase client instance for backward compatibility
+// 後方互換性のためのSupabaseクライアントインスタンスをエクスポート
 export const supabase = SupabaseService.getInstance();
 
-// Export the service for advanced usage
+// 高度な使用のためのサービスをエクスポート
 export const supabaseService = SupabaseService;

@@ -298,3 +298,11 @@ export function isAuthenticated(): boolean {
     return false;
   }
 }
+
+/**
+ * 現在のユーザーが管理者かチェック
+ */
+export async function isAdmin(): Promise<boolean> {
+  const { data } = await getSession();
+  return data?.user?.user_metadata?.role === 'admin' || false;
+}
