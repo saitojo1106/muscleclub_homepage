@@ -3,20 +3,31 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  
+  // エラーを無視してビルドを進める設定
   typescript: {
-    // TypeScriptのエラーを無視してビルドを続行
     ignoreBuildErrors: true,
   },
   eslint: {
-    // ESLintのエラーも無視
     ignoreDuringBuilds: true,
   },
+
+  // 画像ドメイン設定を新しい形式に更新
   images: {
-    domains: ['placehold.co'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.githubusercontent.com',
+      }
+    ],
   },
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      // クライアントサイドビルドでは fs, path などのNode.jsモジュールを無視
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,
@@ -24,8 +35,10 @@ const nextConfig = {
       };
     }
     
-    // エイリアスの設定を明示的に追加
-    config.resolve.alias['@'] = path.join(process.cwd(), 'src');
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.join(__dirname, 'src')
+    };
     
     return config;
   },
