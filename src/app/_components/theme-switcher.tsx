@@ -40,7 +40,7 @@ export function ThemeSwitcher() {
 
   function updateDOM(dark: boolean) {
     document.documentElement.classList.toggle("dark", dark);
-    document.documentElement.setAttribute('data-mode', dark ? 'dark' : 'light');
+    // data-modeの設定を削除
   }
 
   function toggleTheme() {
@@ -86,8 +86,6 @@ export function ThemeScript() {
               
               var isDark = savedTheme === "dark" || (savedTheme !== "light" && prefersDark);
               document.documentElement.classList.toggle("dark", isDark);
-              // data-modeの設定を削除
-              // document.documentElement.setAttribute('data-mode', isDark ? 'dark' : 'light');
             } catch (e) {
               console.error("テーマの適用中にエラーが発生しました:", e);
             }

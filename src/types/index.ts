@@ -43,7 +43,7 @@ export type CompetitionResult = {
   rank: string;
 };
 
-export interface Post {
+export type Post = {
   slug: string;
   title: string;
   date: string;
@@ -58,13 +58,4 @@ export interface Post {
     url: string;
   };
   preview?: boolean;
-}
-
-export type Entity = {
-  id: number;
-  name: string;
-  description?: string;
-  created_at?: string;
-  updated_at?: string;
-  // 必要なプロパティを追加
 };
